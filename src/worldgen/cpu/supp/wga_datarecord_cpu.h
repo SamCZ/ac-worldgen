@@ -11,12 +11,12 @@ public:
 
 	public:
 		Key() = default;
-		Key(WGA_Symbol *sym, const BlockWorldPos &origin, SubKey subKey);
+		Key(WGA_Symbol *sym, const AC::BlockWorldPos &origin, SubKey subKey);
 		Key(const Key &other);
 
 	public:
 		WGA_Symbol *symbol = nullptr;
-		BlockWorldPos origin;
+		AC::BlockWorldPos origin;
 		SubKey subKey = 0;
 
 	public:

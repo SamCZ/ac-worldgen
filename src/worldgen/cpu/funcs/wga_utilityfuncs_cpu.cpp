@@ -52,8 +52,8 @@ void WGA_UtilityFuncs_CPU::distanceToLine(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU:
 	const auto ah = a.dataHandle(key.origin), bh = b.dataHandle(key.origin), ph = p.dataHandle(key.origin);
 
 	for(int i = 0; i < result.size; i++) {
-		const V3F a = ah[i], b = bh[i], p = ph[i];
-		const V3F abDiff = b - a;
+		const AC::V3F a = ah[i], b = bh[i], p = ph[i];
+		const AC::V3F abDiff = b - a;
 		result[i] = abDiff.crossProduct(a - p).length() / abDiff.length();
 	}
 }

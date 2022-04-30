@@ -26,11 +26,11 @@
   FUNC(select, 3, ((T, cond, Bool), (ANY, thn), (ARG, els, 2)), (ARG, result, 2), DIM_MAX_ARGS_3, (EXT, Utility), "If `cond` is `true`, returns `thn`, else returns `els`.") \
   \
   SECTION("Vector functions") \
-  FUNC(float2, 2, ((T, x, Float), (T, y, Float)), (T, r, Float2), DIM_MAX_ARGS_2, (INLINE, Vector2F(arg1, arg2)), "Constructs a 2-dimensional vector.") \
-  FUNC(float2, 1, ((T, v, Float)), (T, r, Float2), DIM_MAX_ARGS_1, (INLINE, Vector2F(arg1)), "Constructs a 2-dimensional vector.") \
-  FUNC(float3, 3, ((T, x, Float), (T, y, Float), (T, z, Float)), (T, r, Float3), DIM_MAX_ARGS_3, (INLINE, Vector3F(arg1, arg2, arg3)), "Constructs a 3-dimensional vector.") \
-  FUNC(float3, 2, ((T, xy, Float2), (T, z, Float)), (T, r, Float3), DIM_MAX_ARGS_2, (INLINE, Vector3F(arg1, arg2)), "Constructs a 3-dimensional vector.") \
-  FUNC(float3, 1, ((T, v, Float)), (T, r, Float3), DIM_MAX_ARGS_1, (INLINE, Vector3F(arg1)), "Constructs a 3-dimensional vector.") \
+  FUNC(float2, 2, ((T, x, Float), (T, y, Float)), (T, r, Float2), DIM_MAX_ARGS_2, (INLINE, AC::Vector2F(arg1, arg2)), "Constructs a 2-dimensional vector.") \
+  FUNC(float2, 1, ((T, v, Float)), (T, r, Float2), DIM_MAX_ARGS_1, (INLINE, AC::Vector2F(arg1)), "Constructs a 2-dimensional vector.") \
+  FUNC(float3, 3, ((T, x, Float), (T, y, Float), (T, z, Float)), (T, r, Float3), DIM_MAX_ARGS_3, (INLINE, AC::Vector3F(arg1, arg2, arg3)), "Constructs a 3-dimensional vector.") \
+  FUNC(float3, 2, ((T, xy, Float2), (T, z, Float)), (T, r, Float3), DIM_MAX_ARGS_2, (INLINE, AC::Vector3F(arg1, arg2)), "Constructs a 3-dimensional vector.") \
+  FUNC(float3, 1, ((T, v, Float)), (T, r, Float3), DIM_MAX_ARGS_1, (INLINE, AC::Vector3F(arg1)), "Constructs a 3-dimensional vector.") \
   \
   FUNC(x, 1, ((NUM_VEC, vec)), (T, x, Float), DIM_MAX_ARGS_1, (INLINE, arg1.x()), "Returns the `x` component of a vector.") \
   FUNC(y, 1, ((NUM_VEC, vec)), (T, y, Float), DIM_MAX_ARGS_1, (INLINE, arg1.y()), "Returns the `y` component of a vector.") \
@@ -239,7 +239,7 @@ public:
 
 public:
 	virtual WGA_Value *constFloat(float val) = 0;
-	virtual WGA_Value *constFloat3(const V3F val) = 0;
+	virtual WGA_Value *constFloat3(const AC::V3F val) = 0;
 	virtual WGA_Value *constBlock(BlockID val) = 0;
 	virtual WGA_Value *constBool(bool val) = 0;
 	virtual WGA_Value *constRule(WGA_Rule *val) = 0;

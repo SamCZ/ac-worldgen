@@ -23,7 +23,7 @@ WGA_StructureGenerator_CPU::WGA_StructureGenerator_CPU(WorldGenAPI_CPU &api) :
 
 }
 
-void WGA_StructureGenerator_CPU::setup(WGA_Rule *entryRule, const BlockWorldPos &origin, Seed seed) {
+void WGA_StructureGenerator_CPU::setup(WGA_Rule *entryRule, const AC::BlockWorldPos &origin, Seed seed) {
 	ZoneScoped;
 	bind();
 	SCOPE_EXIT(unbind());
@@ -38,7 +38,7 @@ void WGA_StructureGenerator_CPU::setup(WGA_Rule *entryRule, const BlockWorldPos 
 	queuedRuleExpansions_ = {};
 	currentDataContext_ = {};
 
-	expandRule(entryRule, origin, BlockOrientation(), nullptr);
+	expandRule(entryRule, origin, AC::BlockOrientation(), nullptr);
 }
 
 bool WGA_StructureGenerator_CPU::process() {
@@ -119,21 +119,21 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 			auto blockv = WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>(bar.block);
 
 			if(bar.startPos) {
-				const BlockWorldPos worldPos1 = dcx.mapToWorld(blockPosValue(bar.startPos, dcx.constSamplePos()));
-				const BlockWorldPos worldPos2 = bar.endPos ? cex->data->mapToWorld(blockPosValue(bar.endPos, dcx.constSamplePos())) : worldPos1;
+				const AC::BlockWorldPos worldPos1 = dcx.mapToWorld(blockPosValue(bar.startPos, dcx.constSamplePos()));
+				const AC::BlockWorldPos worldPos2 = bar.endPos ? cex->data->mapToWorld(blockPosValue(bar.endPos, dcx.constSamplePos())) : worldPos1;
 
-				const BlockWorldPos worldStartPos = worldPos1.min(worldPos2);
-				const BlockWorldPos worldEndPos = worldPos1.max(worldPos2);
+				const AC::BlockWorldPos worldStartPos = worldPos1.min(worldPos2);
+				const AC::BlockWorldPos worldEndPos = worldPos1.max(worldPos2);
 
-				auto it = vectorIterator<BlockWorldPos>(worldStartPos & ~0xf, worldEndPos & ~0xf, 16);
-				for(const BlockWorldPos &subChunkPos: it) {
+				auto it = vectorIterator<AC::BlockWorldPos>(worldStartPos & ~0xf, worldEndPos & ~0xf, 16);
+				for(const AC::BlockWorldPos &subChunkPos: it) {
 					WGA_DataHandle_CPU<WGA_Value::ValueType::Block> blockh;
 
 					blockh = blockv.dataHandle(subChunkPos);
 					auto &srr = result->subChunkRecords[subChunkPos];
 
-					const BlockWorldPos start = worldStartPos.max(subChunkPos) - subChunkPos;
-					const BlockWorldPos end = worldEndPos.min(subChunkPos + 15) - subChunkPos;
+					const AC::BlockWorldPos start = worldStartPos.max(subChunkPos) - subChunkPos;
+					const AC::BlockWorldPos end = worldEndPos.min(subChunkPos + 15) - subChunkPos;
 
 					const auto volv = (end - start + 1);
 					const BlockWorldPos_T volume = volv.x() * volv.y() * volv.z();
@@ -142,7 +142,7 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 					if(srr.shouldUseFlat(volume)) {
 						auto resh = srr.flatData.data();
 
-						for(const BlockWorldPos &pos: vectorIterator(start, end)) {
+						for(const AC::BlockWorldPos &pos: vectorIterator(start, end)) {
 							const int i = pos.x() | (pos.y() << 4) | (pos.z() << 8);
 							ASSERT(i < srr.flatData.size());
 
@@ -153,7 +153,7 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 					}
 						// Associative data filling
 					else {
-						for(const BlockWorldPos &pos: vectorIterator(start, end)) {
+						for(const AC::BlockWorldPos &pos: vectorIterator(start, end)) {
 							const int i = pos.x() | (pos.y() << 4) | (pos.z() << 8);
 
 							const BlockID blockv = blockh[i];
@@ -165,18 +165,18 @@ WGA_StructureOutputData_CPUPtr WGA_StructureGenerator_CPU::generateOutput() {
 			}
 
 			if(!bar.positions.empty()) {
-				BlockWorldPos offset;
+				AC::BlockWorldPos offset;
 				if(bar.positionsOffset)
 					offset = blockPosValue(bar.startPos, dcx.constSamplePos());
 
-				for(const BlockWorldPos &pos: bar.positions) {
-					const BlockWorldPos worldPos = dcx.mapToWorld(pos + offset);
+				for(const AC::BlockWorldPos &pos: bar.positions) {
+					const AC::BlockWorldPos worldPos = dcx.mapToWorld(pos + offset);
 
 					const BlockID block = blockv.sampleAt(worldPos);
 					if(block == blockID_undefined)
 						continue;
 
-					const BlockWorldPos subChunkPos = worldPos & ~(chunkSize - 1);
+					const AC::BlockWorldPos subChunkPos = worldPos & ~(chunkSize - 1);
 
 					auto &srr = result->subChunkRecords[subChunkPos];
 					const ChunkBlockIndex six = worldPos.subChunkBlockIndex(0);
@@ -228,7 +228,7 @@ void WGA_StructureGenerator_CPU::unbind() {
 	api_.structureGen = nullptr;
 }
 
-bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const BlockWorldPos &localOrigin, const BlockOrientation &orientation, const DataContextPtr &data) {
+bool WGA_StructureGenerator_CPU::expandRule(WGA_Rule *rule, const AC::BlockWorldPos &localOrigin, const AC::BlockOrientation &orientation, const DataContextPtr &data) {
 	// ZoneScoped;
 
 	RuleExpansionContextPtr rex(new RuleExpansionContext{
@@ -326,7 +326,7 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 	else if(tt == TT::expandsToRule) {
 		addBranch();
 
-		if(!expandRule(rex->targetRule(), BlockWorldPos(), ctx.orientation, ss.expansionData)) {
+		if(!expandRule(rex->targetRule(), AC::BlockWorldPos(), ctx.orientation, ss.expansionData)) {
 			failBranch();
 			return false;
 		}
@@ -353,16 +353,16 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 		{
 			int transformFlags = 0;
 			if(std::get<bool>(node->pragma("horizontalEdge")))
-				transformFlags |= +BlockOrientation::TransformFlags::horizontalEdge;
+				transformFlags |= +AC::BlockOrientation::TransformFlags::horizontalEdge;
 
 			if(std::get<bool>(node->pragma("verticalEdge")))
-				transformFlags |= +BlockOrientation::TransformFlags::verticalEdge;
+				transformFlags |= +AC::BlockOrientation::TransformFlags::verticalEdge;
 
 			if(std::get<bool>(node->pragma("adjacent")))
-				transformFlags |= +BlockOrientation::TransformFlags::adjacent;
+				transformFlags |= +AC::BlockOrientation::TransformFlags::adjacent;
 
 			if(crex.mirror)
-				transformFlags |= +BlockOrientation::TransformFlags::mirror;
+				transformFlags |= +AC::BlockOrientation::TransformFlags::mirror;
 
 			dcx.localToWorldMatrix() *= opt.orientation.transformToMatch(ctx.orientation.adjacent(), transformFlags);
 			dcx.localToWorldMatrix() *= BlockTransformMatrix::translation(-blockPosValue(node->config().position, ss.expansionData->constSamplePos()));
@@ -393,8 +393,8 @@ bool WGA_StructureGenerator_CPU::processExpansion(WGA_StructureGenerator_CPU::Ru
 			if(!nameID)
 				nameID = areaNameMapping_.size();
 
-			const BlockWorldPos pos1 = dcx.mapToWorld(blockPosValue(arc.startPos, dcx.constSamplePos()));
-			const BlockWorldPos pos2 = dcx.mapToWorld(blockPosValue(arc.endPos, dcx.constSamplePos()));
+			const AC::BlockWorldPos pos1 = dcx.mapToWorld(blockPosValue(arc.startPos, dcx.constSamplePos()));
+			const AC::BlockWorldPos pos2 = dcx.mapToWorld(blockPosValue(arc.endPos, dcx.constSamplePos()));
 
 			Area area{
 				.nameID = nameID,
@@ -521,7 +521,7 @@ WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::ne
 				}
 
 				for(WGA_ComponentNode *targetNode: nodeList) {
-					BlockOrientation ori = targetNode->config().orientation;
+					AC::BlockOrientation ori = targetNode->config().orientation;
 
 					if(ori.isSpecified() && std::get<bool>(targetNode->pragma("allowRotation"))) {
 						for(int i = 0; i < 4; i++, ori = ori.nextUpVariant())
@@ -593,15 +593,15 @@ bool WGA_StructureGenerator_CPU::checkConditions(WGA_GrammarSymbol *sym) {
 	return result;
 }
 
-BlockWorldPos WGA_StructureGenerator_CPU::blockPosValue(WGA_Value *val, const BlockWorldPos &samplePoint) {
+AC::BlockWorldPos WGA_StructureGenerator_CPU::blockPosValue(WGA_Value *val, const AC::BlockWorldPos &samplePoint) {
 	return WGA_ValueWrapper_CPU<WGA_Value::ValueType::Float3>(val).sampleAt(samplePoint).to<BlockWorldPos_T>();
 }
 
-bool WGA_StructureGenerator_CPU::boolValue(WGA_Value *val, const BlockWorldPos &samplePoint) {
+bool WGA_StructureGenerator_CPU::boolValue(WGA_Value *val, const AC::BlockWorldPos &samplePoint) {
 	return WGA_ValueWrapper_CPU<WGA_Value::ValueType::Bool>(val).sampleAt(samplePoint);
 }
 
-BlockID WGA_StructureGenerator_CPU::blockValue(WGA_Value *val, const BlockWorldPos &samplePoint) {
+BlockID WGA_StructureGenerator_CPU::blockValue(WGA_Value *val, const AC::BlockWorldPos &samplePoint) {
 	return WGA_ValueWrapper_CPU<WGA_Value::ValueType::Block>(val).sampleAt(samplePoint);
 }
 
@@ -683,7 +683,7 @@ void WGA_StructureGenerator_CPU::DataContext::setParams() {
 }
 
 void WGA_StructureGenerator_CPU::DataContext::updateMatrix() {
-	constSamplePos_ = localToWorldMatrix_ * BlockWorldPos();
+	constSamplePos_ = localToWorldMatrix_ * AC::BlockWorldPos();
 	seed_ = WorldGen_CPU_Utils::hash(constSamplePos_.to<uint32_t>(), parentContext_ ? parentContext_->seed_ : api_->structureGen->seed_);
 	matrixHash_ = std::hash<BlockTransformMatrix>()(localToWorldMatrix_);
 }

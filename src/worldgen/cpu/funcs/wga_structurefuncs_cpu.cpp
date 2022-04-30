@@ -36,7 +36,7 @@ void WGA_StructureFuncs_CPU::spawn2D(Api api, Key key, DH <VT::Block> result, V 
 			if(!(spawnConditionHandle[ix]))
 				continue;
 
-			spawnList.emplace_back(key.origin + BlockWorldPos(i % chunkSize, i / chunkSize, z), api->mapToSymbol<WGA_Rule>(entryRuleHandle[ix]));
+			spawnList.emplace_back(key.origin + AC::BlockWorldPos(i % chunkSize, i / chunkSize, z), api->mapToSymbol<WGA_Rule>(entryRuleHandle[ix]));
 		}
 	};
 
@@ -64,10 +64,10 @@ void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key
 		throw std::exception("localPos() called outside structure generation");
 
 	const BlockTransformMatrix m = api->structureGen->currentDataContext()->localToWorldMatrix().nonScalingInverted();
-	const BlockWorldPos base = m * result.worldPos(key.origin, 0);
-	const BlockWorldPos vx = (m * result.worldPos(key.origin, 1)) - base;
-	const BlockWorldPos vy = (m * result.worldPos(key.origin, chunkSize)) - base;
-	const BlockWorldPos vz = (m * result.worldPos(key.origin, chunkSurface)) - base;
+	const AC::BlockWorldPos base = m * result.worldPos(key.origin, 0);
+	const AC::BlockWorldPos vx = (m * result.worldPos(key.origin, 1)) - base;
+	const AC::BlockWorldPos vy = (m * result.worldPos(key.origin, chunkSize)) - base;
+	const AC::BlockWorldPos vz = (m * result.worldPos(key.origin, chunkSurface)) - base;
 
 	{
 		int i = 0;
@@ -158,10 +158,10 @@ void WGA_StructureFuncs_CPU::_spawn(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key k
 	};
 
 
-	const ChunkWorldPos originChunk = key.origin.chunkPosition();
+	const AC::ChunkWorldPos originChunk = key.origin.chunkPosition();
 	const ChunkWorldPos_T maxRadiusV = static_cast<ChunkWorldPos_T>(maxRadius.constValue());
-	for(const ChunkWorldPos &pos: vectorIterator(originChunk - maxRadiusV, originChunk + maxRadiusV)) {
-		const WGA_DataRecord_CPU::Key recKey(key.symbol, BlockWorldPos::fromChunkBlockIndex(pos, 0, 0), 1);
+	for(const AC::ChunkWorldPos &pos: vectorIterator(originChunk - maxRadiusV, originChunk + maxRadiusV)) {
+		const WGA_DataRecord_CPU::Key recKey(key.symbol, AC::BlockWorldPos::fromChunkBlockIndex(pos, 0, 0), 1);
 		const StructureRecPtr rec = std::static_pointer_cast<StructureRec>(api->getDataRecord(recKey, ctor));
 
 		for(const WGA_StructureOutputData_CPUPtr &struc: rec->data) {

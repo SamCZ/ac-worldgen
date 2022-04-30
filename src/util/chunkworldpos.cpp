@@ -2,4 +2,4 @@
 
 #include "util/blockworldpos.h"
 
-const ChunkWorldPos ChunkWorldPos::invalid(std::numeric_limits<T>::min());
+const AC::ChunkWorldPos AC::ChunkWorldPos::invalid(std::numeric_limits<T>::min());

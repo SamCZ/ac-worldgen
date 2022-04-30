@@ -256,9 +256,9 @@ void WGLImplementationPass::enterComponentIncludeStatementBlockParam(WoglacParse
 	WGLDependencyList deps;
 	const auto val = expression(ctx->val, deps);
 
-	std::vector<BlockWorldPos> poss;
+	std::vector<AC::BlockWorldPos> poss;
 	for(const VOXParser::VoxelPos &vp: voxParser_.voxels().at(id))
-		poss.push_back(BlockWorldPos(vp.x, vp.y, vp.z));
+		poss.push_back(AC::BlockWorldPos(vp.x, vp.y, vp.z));
 
 	if(poss.empty())
 		return;
@@ -280,7 +280,7 @@ void WGLImplementationPass::enterComponentIncludeStatementNodeParam(WoglacParser
 
 	componentIncludePositions_.clear();
 	for(const VOXParser::VoxelPos &vp: voxParser_.voxels().at(id))
-		componentIncludePositions_.push_back(BlockWorldPos(vp.x, vp.y, vp.z));
+		componentIncludePositions_.push_back(AC::BlockWorldPos(vp.x, vp.y, vp.z));
 
 	if(componentIncludePositions_.empty())
 		return;
@@ -305,7 +305,7 @@ void WGLImplementationPass::exitComponentIncludeStatementNodeParam(WoglacParser:
 
 	// Create all the other nodes, copy pragmas
 	componentIncludePositions_.erase(componentIncludePositions_.begin());
-	for(const BlockWorldPos &pos: componentIncludePositions_) {
+	for(const AC::BlockWorldPos &pos: componentIncludePositions_) {
 		WGLSymbol *node = componentNodeDeclaration(ctx->com, currentScope(), false);
 		WGLDependencyList deps;
 
@@ -432,7 +432,7 @@ void WGLImplementationPass::enterPragmaStatement(WoglacParser::PragmaStatementCo
 			+WGLSymbol::Type::ComponentNode
 		};
 		if(!supportedSymbolTypes.contains(+target->symbolType()))
-			throw WGLError::WGLError("Pragmas are not supported for the given context.", ctx);
+			throw WGLError("Pragmas are not supported for the given context.", ctx);
 
 		ctx_->addApiCmd(nullptr, {target}, [target, name, value](WGLAPIContext &ctx) {
 			ctx.map<WGA_Symbol>(target)->setPragma(name, value);
@@ -680,7 +680,7 @@ void WGLImplementationPass::componentNodeCommonPart(WGLSymbol *sym, WoglacParser
 	if(ctx->prop && ctx->prop->verticalEdge)
 		pragmaSets.push_back({"verticalEdge", true});
 
-	const BlockOrientation orientation = ctx->prop ? BlockOrientation(oriStr(ctx->prop->ori), oriStr(ctx->prop->ori2)) : BlockOrientation();
+	const AC::BlockOrientation orientation = ctx->prop ? AC::BlockOrientation(oriStr(ctx->prop->ori), oriStr(ctx->prop->ori2)) : AC::BlockOrientation();
 
 	if(rule)
 		deps.insert(rule);

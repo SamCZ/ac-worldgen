@@ -46,7 +46,7 @@ void WGA_SamplingFuncs_CPU::sampleAt(Api api, Key key, DH <t> result, V <t> valu
 
 	DH <VT::Float2> posh = posv.dataHandle(key.origin);
 	for(int i = 0; i < result.size; i++)
-		result[i] = value.sampleAt(V3F(posh[i], 0).to<BlockWorldPos_T>());
+		result[i] = value.sampleAt(AC::V3F(posh[i], 0).to<BlockWorldPos_T>());
 }
 
 template<WGA_Funcs_CPU::VT t>
@@ -62,14 +62,14 @@ void WGA_SamplingFuncs_CPU::sampleAvg2D(Api api, Key key, DH <t> result, V <t> v
 	const auto valh = value.dataHandle(key.origin);
 
 	for(int i = 0; i < result.size; i++) {
-		const BlockWorldPos worldPos = result.worldPos(key.origin, i);
+		const AC::BlockWorldPos worldPos = result.worldPos(key.origin, i);
 		const BlockWorldPos_T distv = static_cast<BlockWorldPos_T>(disth[i]);
 
 		result[i] =
 			(
 				valh[i]
-				+ valXp.sampleAt(worldPos + BlockWorldPos(distv, 0, 0)) + valXm.sampleAt(worldPos - BlockWorldPos(distv, 0, 0))
-				+ valYp.sampleAt(worldPos + BlockWorldPos(0, distv, 0)) + valYm.sampleAt(worldPos - BlockWorldPos(0, distv, 0))
+				+ valXp.sampleAt(worldPos + AC::BlockWorldPos(distv, 0, 0)) + valXm.sampleAt(worldPos - AC::BlockWorldPos(distv, 0, 0))
+				+ valYp.sampleAt(worldPos + AC::BlockWorldPos(0, distv, 0)) + valYm.sampleAt(worldPos - AC::BlockWorldPos(0, distv, 0))
 			) * coef;
 	}
 }

@@ -527,48 +527,53 @@ struct std::formatter<Vector<T, D>> : public std::formatter<std::string> {
 	}
 };
 
-template<typename T>
-using Vector2 = Vector<T, 2>;
-template<typename T>
-using Vector3 = Vector<T, 3>;
-template<typename T>
-using Vector4 = Vector<T, 4>;
 
-using Vector2I = Vector2<int>;
-using Vector2I8 = Vector2<int8_t>;
-using Vector2I32 = Vector2<int32_t>;
-using Vector2UI = Vector2<unsigned int>;
-using Vector2U8 = Vector2<uint8_t>;
-using Vector2U16 = Vector2<uint16_t>;
-using Vector2U32 = Vector2<uint32_t>;
-using Vector2F = Vector2<float>;
+namespace AC
+{
 
-using Vector3B = Vector3<bool>;
-using Vector3I = Vector3<int>;
-using Vector3I32 = Vector3<int32_t>;
-using Vector3I8 = Vector3<int8_t>;
-using Vector3UI = Vector3<unsigned int>;
-using Vector3U8 = Vector3<uint8_t>;
-using Vector3U16 = Vector3<uint16_t>;
-using Vector3U32 = Vector3<uint32_t>;
-using Vector3F = Vector3<float>;
+	template<typename T>
+	using Vector2 = Vector<T, 2>;
+	template<typename T>
+	using Vector3 = Vector<T, 3>;
+	template<typename T>
+	using Vector4 = Vector<T, 4>;
 
-using Vector4I = Vector4<int>;
-using Vector4I8 = Vector4<int8_t>;
-using Vector4I32 = Vector4<int32_t>;
-using Vector4UI = Vector4<unsigned int>;
-using Vector4U8 = Vector4<uint8_t>;
+	using Vector2I = Vector2<int>;
+	using Vector2I8 = Vector2<int8_t>;
+	using Vector2I32 = Vector2<int32_t>;
+	using Vector2UI = Vector2<unsigned int>;
+	using Vector2U8 = Vector2<uint8_t>;
+	using Vector2U16 = Vector2<uint16_t>;
+	using Vector2U32 = Vector2<uint32_t>;
+	using Vector2F = Vector2<float>;
 
-using Vector4F = Vector4<float>;
+	using Vector3B = Vector3<bool>;
+	using Vector3I = Vector3<int>;
+	using Vector3I32 = Vector3<int32_t>;
+	using Vector3I8 = Vector3<int8_t>;
+	using Vector3UI = Vector3<unsigned int>;
+	using Vector3U8 = Vector3<uint8_t>;
+	using Vector3U16 = Vector3<uint16_t>;
+	using Vector3U32 = Vector3<uint32_t>;
+	using Vector3F = Vector3<float>;
 
-using V2I = Vector2I;
-using V2F = Vector2F;
+	using Vector4I = Vector4<int>;
+	using Vector4I8 = Vector4<int8_t>;
+	using Vector4I32 = Vector4<int32_t>;
+	using Vector4UI = Vector4<unsigned int>;
+	using Vector4U8 = Vector4<uint8_t>;
 
-using V3U8 = Vector3U8;
-using V3F = Vector3F;
+	using Vector4F = Vector4<float>;
 
-using V4F = Vector4F;
+	using V2I = Vector2I;
+	using V2F = Vector2F;
 
+	using V3U8 = Vector3U8;
+	using V3F = Vector3F;
+
+	using V4F = Vector4F;
+
+}
 /// The vector iterator is inclusive with hi!
 template<typename V>
 auto vectorIterator(const V &lo, const V &hi, const V &inc = V(1)) {

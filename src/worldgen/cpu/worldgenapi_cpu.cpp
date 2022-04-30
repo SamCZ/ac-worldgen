@@ -33,7 +33,7 @@ WGA_Value *WorldGenAPI_CPU::constFloat(float val) {
 	return WGCPUF_CONST(Float, val);
 }
 
-WGA_Value *WorldGenAPI_CPU::constFloat3(const V3F val) {
+WGA_Value *WorldGenAPI_CPU::constFloat3(const AC::V3F val) {
 	auto api = this;
 	return WGCPUF_CONST(Float3, val);
 }
@@ -140,9 +140,9 @@ WGA_DataRecord_CPU::Ptr WorldGenAPI_CPU::getDataRecord(const WGA_DataRecord_CPU:
 	return dataCache_.get(key, ctor);
 }
 
-WGA_Biome &WorldGenAPI_CPU::getChunkBiome(const BlockWorldPos &origin_) {
+WGA_Biome &WorldGenAPI_CPU::getChunkBiome(const AC::BlockWorldPos &origin_) {
 	using Rec = WGA_DataRecordT_CPU<WGA_Biome *>;
-	const BlockWorldPos origin = BlockWorldPos(origin_.x(), origin_.y(), 0);
+	const AC::BlockWorldPos origin = AC::BlockWorldPos(origin_.x(), origin_.y(), 0);
 
 	const auto ctor = [this](const WGA_DataRecord_CPU::Key &key) {
 		std::unordered_map<WGA_Value_CPU *, float> fields;
@@ -185,9 +185,9 @@ WGA_Biome &WorldGenAPI_CPU::getChunkBiome(const BlockWorldPos &origin_) {
 	return *r.data;
 }
 
-std::shared_ptr<WGA_DataRecordT_CPU<WGA_BiomeData_CPU>> WorldGenAPI_CPU::getBiomeData(const BlockWorldPos &origin_) {
+std::shared_ptr<WGA_DataRecordT_CPU<WGA_BiomeData_CPU>> WorldGenAPI_CPU::getBiomeData(const AC::BlockWorldPos &origin_) {
 	using Rec = WGA_DataRecordT_CPU<WGA_BiomeData_CPU>;
-	const BlockWorldPos origin = BlockWorldPos(origin_.x(), origin_.y(), 0);
+	const AC::BlockWorldPos origin = AC::BlockWorldPos(origin_.x(), origin_.y(), 0);
 
 	const auto ctor = [this](const WGA_DataRecord_CPU::Key &key) {
 		auto r = new Rec();

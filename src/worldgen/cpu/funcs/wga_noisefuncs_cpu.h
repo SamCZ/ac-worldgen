@@ -41,7 +41,7 @@ public:
 private:
 	static void rand(Api api, Key key, DH <VT::Float> result, V <VT::Float> seed);
 
-	static BlockWorldPos adjustOrigin(const BlockWorldPos &o, Seed seed);
+	static AC::BlockWorldPos adjustOrigin(const AC::BlockWorldPos &o, Seed seed);
 
 };
 

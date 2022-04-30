@@ -3,7 +3,7 @@
 #include "worldgen/cpu/worldgenapi_cpu.h"
 #include "wga_datacache_cpu.h"
 
-WGA_DataRecord_CPU::Key::Key(WGA_Symbol *sym, const BlockWorldPos &origin, WGA_DataRecord_CPU::SubKey subKey)
+WGA_DataRecord_CPU::Key::Key(WGA_Symbol *sym, const AC::BlockWorldPos &origin, WGA_DataRecord_CPU::SubKey subKey)
 	: symbol(sym), origin(origin), subKey(subKey) {
 
 }

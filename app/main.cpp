@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
 				break;
 
 			if(type == "getData") {
-				BlockWorldPos pos;
+				AC::BlockWorldPos pos;
 				std::cin >> pos.x() >> pos.y() >> pos.z();
 				pos = pos & ~blockInChunkPosMask;
 

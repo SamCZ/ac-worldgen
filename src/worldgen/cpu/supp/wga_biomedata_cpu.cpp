@@ -3,26 +3,26 @@
 #include "worldgen/cpu/worldgenapi_cpu.h"
 #include "worldgen_cpu_utils.h"
 
-void WGA_BiomeData_CPU::calculateFor(WorldGenAPI_CPU &api, const BlockWorldPos &pos) {
+void WGA_BiomeData_CPU::calculateFor(WorldGenAPI_CPU &api, const AC::BlockWorldPos &pos) {
 	const BlockWorldPos_T gridSize = api.biomeGridSize();
 	const BlockWorldPos_T gridSizeMask = gridSize - 1;
 
-	const Vector2I gridNode(pos.x() & ~gridSizeMask, pos.y() & ~gridSizeMask);
+	const AC::Vector2I gridNode(pos.x() & ~gridSizeMask, pos.y() & ~gridSizeMask);
 
 	WGA_Biome *rawBiomes[maxCount];
-	Vector2I nodeRelPositions[maxCount];
+	AC::Vector2I nodeRelPositions[maxCount];
 
 	const uint32_t seed = api.seed();
 
 	for(int i = 0; i < maxCount; i++) {
-		const Vector2I relPos = Vector2I(-gridSize * 2) + Vector2I(i % maxCountComp, i / maxCountComp) * gridSize;
-		const Vector2I baseWorldPos = gridNode + relPos;
+		const AC::Vector2I relPos = AC::Vector2I(-gridSize * 2) + AC::Vector2I(i % maxCountComp, i / maxCountComp) * gridSize;
+		const AC::Vector2I baseWorldPos = gridNode + relPos;
 
 		const uint32_t bhash = WorldGen_CPU_Utils::hashMulti(seed, baseWorldPos.x(), baseWorldPos.y());
-		const Vector2I baseWorldPosOffset = Vector2I(bhash & gridSizeMask, WorldGen_CPU_Utils::hash(8455123, bhash) & gridSizeMask);
-		const Vector2I worldPos = baseWorldPos + baseWorldPosOffset;
+		const AC::Vector2I baseWorldPosOffset = AC::Vector2I(bhash & gridSizeMask, WorldGen_CPU_Utils::hash(8455123, bhash) & gridSizeMask);
+		const AC::Vector2I worldPos = baseWorldPos + baseWorldPosOffset;
 
-		rawBiomes[i] = &api.getChunkBiome(BlockWorldPos(worldPos.x() & ~blockInChunkPosMask, worldPos.y() & ~blockInChunkPosMask, 0));
+		rawBiomes[i] = &api.getChunkBiome(AC::BlockWorldPos(worldPos.x() & ~blockInChunkPosMask, worldPos.y() & ~blockInChunkPosMask, 0));
 		nodeRelPositions[i] = relPos + baseWorldPosOffset;
 	}
 
@@ -46,14 +46,14 @@ void WGA_BiomeData_CPU::calculateFor(WorldGenAPI_CPU &api, const BlockWorldPos &
 	}
 
 	for(int i = 0; i < chunkSurface; i++) {
-		const Vector2I gridRelPos = (pos.xy() & gridSizeMask) + Vector2I(i % chunkSize, i / chunkSize);
+		const AC::Vector2I gridRelPos = (pos.xy() & gridSizeMask) + AC::Vector2I(i % chunkSize, i / chunkSize);
 
 		int winningBiome = -1;
 		float largestWeight = std::numeric_limits<float>::lowest();
 
 		float weights[maxCount] = {0};
 		for(int j = 0; j < maxCount; j++) {
-			const Vector2I diff = (gridRelPos - nodeRelPositions[j]).abs();
+			const AC::Vector2I diff = (gridRelPos - nodeRelPositions[j]).abs();
 			const float distance = sqrt(static_cast<float>(diff.dotProduct(diff)));
 
 			const int biomeId = rawBiomeMapping[j];

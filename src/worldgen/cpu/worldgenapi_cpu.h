@@ -23,7 +23,7 @@ public:
 
 public:
 	virtual WGA_Value *constFloat(float val) override;
-	virtual WGA_Value *constFloat3(const V3F val) override;
+	virtual WGA_Value *constFloat3(const AC::V3F val) override;
 	virtual WGA_Value *constBlock(BlockID val) override;
 	virtual WGA_Value *constBool(bool val) override;
 	virtual WGA_Value *constRule(WGA_Rule *val) override;
@@ -45,8 +45,8 @@ public:
 
 public:
 	WGA_DataRecord_CPU::Ptr getDataRecord(const WGA_DataRecord_CPU::Key &key, const WGA_DataRecord_CPU::Ctor &ctor);
-	WGA_Biome &getChunkBiome(const BlockWorldPos &origin);
-	std::shared_ptr<WGA_DataRecordT_CPU<WGA_BiomeData_CPU> > getBiomeData(const BlockWorldPos &origin);
+	WGA_Biome &getChunkBiome(const AC::BlockWorldPos &origin);
+	std::shared_ptr<WGA_DataRecordT_CPU<WGA_BiomeData_CPU> > getBiomeData(const AC::BlockWorldPos &origin);
 
 	/// Creates thread local cache for data (saves some mutex collisions)
 	void createLocalCache();

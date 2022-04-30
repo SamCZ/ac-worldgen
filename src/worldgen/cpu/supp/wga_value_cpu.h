@@ -58,7 +58,7 @@ public:
 	}
 
 public:
-	WGA_DataRecord_CPU::Ptr getDataRecord(const BlockWorldPos &origin, WGA_DataRecord_CPU::SubKey subKey);
+	WGA_DataRecord_CPU::Ptr getDataRecord(const AC::BlockWorldPos &origin, WGA_DataRecord_CPU::SubKey subKey);
 
 private:
 	WorldGenAPI_CPU &api_;

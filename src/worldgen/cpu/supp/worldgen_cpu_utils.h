@@ -43,10 +43,10 @@ public:
 		return h;
 	}
 
-	static inline uint32_t hash(const Vector2U32 &v, uint32_t seed) {
+	static inline uint32_t hash(const AC::Vector2U32 &v, uint32_t seed) {
 		return hashMulti(seed, v.x(), v.y());
 	}
-	static uint32_t hash(const Vector3U32 &v, uint32_t seed) {
+	static uint32_t hash(const AC::Vector3U32 &v, uint32_t seed) {
 		return hashMulti(seed, v.x(), v.y(), v.z());
 	}
 

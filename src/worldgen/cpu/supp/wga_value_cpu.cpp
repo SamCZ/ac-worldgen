@@ -15,7 +15,7 @@ WGA_Value_CPU::WGA_Value_CPU(WGA_Value_CPU *proxy)
 	proxy_ = proxy;
 }
 
-WGA_DataRecord_CPU::Ptr WGA_Value_CPU::getDataRecord(const BlockWorldPos &origin, WGA_DataRecord_CPU::SubKey subKey) {
+WGA_DataRecord_CPU::Ptr WGA_Value_CPU::getDataRecord(const AC::BlockWorldPos &origin, WGA_DataRecord_CPU::SubKey subKey) {
 	if(proxy_)
 		return proxy_->getDataRecord(origin, subKey);
 
@@ -26,7 +26,7 @@ WGA_DataRecord_CPU::Ptr WGA_Value_CPU::getDataRecord(const BlockWorldPos &origin
 	//assert((origin & (chunkSize - 1)) == 0);
 
 	if(dim == Dimensionality::DConst)
-		key.origin = BlockWorldPos();
+		key.origin = AC::BlockWorldPos();
 
 	else if(dim == Dimensionality::DPerChunk || dim == Dimensionality::D2D)
 		key.origin.z() = 0;

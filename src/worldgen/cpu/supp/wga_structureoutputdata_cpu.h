@@ -19,7 +19,7 @@ public:
 	};
 
 public:
-	std::unordered_map<BlockWorldPos, SubChunkRecord> subChunkRecords;
+	std::unordered_map<AC::BlockWorldPos, SubChunkRecord> subChunkRecords;
 	int dataSize = 0;
 
 };

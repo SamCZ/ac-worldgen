@@ -28,7 +28,7 @@ if(NOT TARGET FastNoise)
 	add_subdirectory(fastNoise2)
 endif()
 
-if(NOT TARGET tracy)
+if(NOT TARGET TracyClient)
 	if(AC_ENABLE_TRACY)
 		set(TRACY_ENABLE ON)
 	else()

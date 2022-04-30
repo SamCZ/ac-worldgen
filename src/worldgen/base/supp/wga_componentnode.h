@@ -14,7 +14,7 @@ public:
 		std::string group;
 		WGA_Value *position = nullptr;
 		WGA_Rule *rule = nullptr; ///< Can be null
-		BlockOrientation orientation;
+		AC::BlockOrientation orientation;
 	};
 
 public:

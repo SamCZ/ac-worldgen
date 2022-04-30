@@ -87,7 +87,7 @@ WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU
 	// Report statistics
 	{
 		Key statsKey = key;
-		statsKey.origin = BlockWorldPos();
+		statsKey.origin = AC::BlockWorldPos();
 
 		std::unique_lock _ml(recordStatsMutex_);
 		RecordStats *stats = &recordStats_[statsKey];

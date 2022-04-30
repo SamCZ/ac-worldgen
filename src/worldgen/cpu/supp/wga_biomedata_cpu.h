@@ -15,7 +15,7 @@ public:
 	int count = 0;
 
 public:
-	void calculateFor(WorldGenAPI_CPU &api, const BlockWorldPos &pos);
+	void calculateFor(WorldGenAPI_CPU &api, const AC::BlockWorldPos &pos);
 
 };
 

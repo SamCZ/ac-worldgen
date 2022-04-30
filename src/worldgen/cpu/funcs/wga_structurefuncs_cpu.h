@@ -9,10 +9,10 @@
 #define WGA_SF_NODE_POS_SHENANIGANS(expr) \
   ASSERT(WorldGenAPI_CPU::structureGen); \
   WGA_StructureGenerator_CPU::DataContext *ctx = WorldGenAPI_CPU::structureGen->currentDataContext(); \
-  const BlockWorldPos constSamplePos = ctx->constSamplePos(); \
+  const AC::BlockWorldPos constSamplePos = ctx->constSamplePos(); \
   auto nodeh = node.dataHandle(key.origin); \
   QuickCache<WGA_SymbolID_CPU> nodePosCache; \
-  BlockWorldPos nodeLocalPos, nodeWorldPos;\
+  AC::BlockWorldPos nodeLocalPos, nodeWorldPos;\
   \
   for(int i = 0; i < result.size; i++) { \
   const WGA_SymbolID_CPU nodeID = nodeh[i];\
@@ -22,7 +22,7 @@
   nodeLocalPos = WGA_ValueWrapper_CPU<VT::Float3>(nodev->config().position).sampleAt(constSamplePos).to<BlockWorldPos_T>(); \
   nodeWorldPos = ctx->mapToWorld(nodeLocalPos); \
   } \
-  const BlockWorldPos worldPos = result.worldPos(key.origin, i); \
+  const AC::BlockWorldPos worldPos = result.worldPos(key.origin, i); \
   result[i] = expr; \
   }
 
@@ -54,7 +54,7 @@ private:
 
 private:
 	struct SpawnRec {
-		BlockWorldPos origin;
+		AC::BlockWorldPos origin;
 		WGA_Rule *entryRule;
 	};
 	using SpawnList = std::vector<SpawnRec>;

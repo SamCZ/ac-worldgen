@@ -14,13 +14,13 @@ struct WGA_ValueRec_CPU<WGA_Value::ValueType::Float> {
 
 template<>
 struct WGA_ValueRec_CPU<WGA_Value::ValueType::Float2> {
-	using T = Vector2F;
+	using T = AC::Vector2F;
 };
 
 
 template<>
 struct WGA_ValueRec_CPU<WGA_Value::ValueType::Float3> {
-	using T = Vector3F;
+	using T = AC::Vector3F;
 };
 
 template<>

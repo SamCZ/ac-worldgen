@@ -31,7 +31,7 @@ public:
 	}
 
 public:
-	inline const DataHandle &dataHandle(const BlockWorldPos &origin, WGA_DataRecord_CPU::SubKey subKey = 0) {
+	inline const DataHandle &dataHandle(const AC::BlockWorldPos &origin, WGA_DataRecord_CPU::SubKey subKey = 0) {
 		if(handleCache_.isAndSet(origin))
 			return cachedHandle_;
 
@@ -49,14 +49,14 @@ public:
 	}
 
 	inline auto constValue(WGA_DataRecord_CPU::SubKey subKey = 0) {
-		return dataHandle(BlockWorldPos(), subKey)[0];
+		return dataHandle(AC::BlockWorldPos(), subKey)[0];
 	}
 
-	inline auto chunkValue(const ChunkWorldPos &pos, WGA_DataRecord_CPU::SubKey subKey = 0) {
-		return dataHandle(BlockWorldPos::fromChunkBlockIndex(pos, 0, 0), subKey)[0];
+	inline auto chunkValue(const AC::ChunkWorldPos &pos, WGA_DataRecord_CPU::SubKey subKey = 0) {
+		return dataHandle(AC::BlockWorldPos::fromChunkBlockIndex(pos, 0, 0), subKey)[0];
 	}
 
-	inline auto sampleAt(const BlockWorldPos &pos, WGA_DataRecord_CPU::SubKey subKey = 0) {
+	inline auto sampleAt(const AC::BlockWorldPos &pos, WGA_DataRecord_CPU::SubKey subKey = 0) {
 		return dataHandle(pos & ~(chunkSize - 1), subKey)[pos];
 	}
 
@@ -64,7 +64,7 @@ public:
 	WGA_Value_CPU *v = nullptr;
 
 private:
-	QuickCache<BlockWorldPos> handleCache_;
+	QuickCache<AC::BlockWorldPos> handleCache_;
 	DataHandle cachedHandle_;
 
 };

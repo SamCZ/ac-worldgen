@@ -21,7 +21,7 @@ public:
 
 	struct Area {
 		int nameID; ///< using areaNameMapping
-		BlockWorldPos startPos, endPos;
+		AC::BlockWorldPos startPos, endPos;
 	};
 
 	struct DataContext;
@@ -40,7 +40,7 @@ public:
 			return sym_;
 		}
 
-		inline BlockWorldPos constSamplePos() const {
+		inline AC::BlockWorldPos constSamplePos() const {
 			return constSamplePos_;
 		}
 
@@ -57,8 +57,8 @@ public:
 		void updateMatrix();
 
 	public:
-		inline BlockWorldPos mapToWorld(const BlockWorldPos &localPos) const {
-			return BlockWorldPos(localToWorldMatrix_ * localPos);
+		inline AC::BlockWorldPos mapToWorld(const AC::BlockWorldPos &localPos) const {
+			return AC::BlockWorldPos(localToWorldMatrix_ * localPos);
 		}
 
 		inline BlockTransformMatrix &localToWorldMatrix() {
@@ -87,7 +87,7 @@ public:
 		DataContextPtr parentContext_;
 
 		BlockTransformMatrix localToWorldMatrix_;
-		BlockWorldPos constSamplePos_;
+		AC::BlockWorldPos constSamplePos_;
 
 	private:
 		std::unordered_map<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr> dataCache_;
@@ -115,7 +115,7 @@ public:
 
 	public:
 		WGA_Rule *const rule = nullptr;
-		const BlockOrientation orientation;
+		const AC::BlockOrientation orientation;
 
 	public:
 		/// List of all expansions the rule can expand to, in the order they should be attempted to be expanded
@@ -136,7 +136,7 @@ public:
 	public:
 		struct Option {
 			WGA_ComponentNode *node = nullptr;
-			BlockOrientation orientation;
+			AC::BlockOrientation orientation;
 		};
 
 		/// List of all nodes that should be attempted to be expanded
@@ -184,7 +184,7 @@ public:
 	WGA_StructureGenerator_CPU(WorldGenAPI_CPU &api);
 
 public:
-	void setup(WGA_Rule *entryRule, const BlockWorldPos &origin, Seed seed);
+	void setup(WGA_Rule *entryRule, const AC::BlockWorldPos &origin, Seed seed);
 	bool process();
 	WGA_StructureOutputData_CPUPtr generateOutput();
 
@@ -206,7 +206,7 @@ private:
 
 private:
 	/// Returns false when fails, does not call failBranch
-	bool expandRule(WGA_Rule *rule, const BlockWorldPos &localOrigin, const BlockOrientation &orientation, const DataContextPtr &data);
+	bool expandRule(WGA_Rule *rule, const AC::BlockWorldPos &localOrigin, const AC::BlockOrientation &orientation, const DataContextPtr &data);
 
 	/// Returns true if the rule was truly expanded
 	bool processExpansion(RuleExpansionState &res);
@@ -222,9 +222,9 @@ private:
 	bool checkConditions(WGA_GrammarSymbol *sym);
 
 private:
-	static BlockWorldPos blockPosValue(WGA_Value *val, const BlockWorldPos &samplePoint);
-	static bool boolValue(WGA_Value *val, const BlockWorldPos &samplePoint);
-	static BlockID blockValue(WGA_Value *val, const BlockWorldPos &samplePoint);
+	static AC::BlockWorldPos blockPosValue(WGA_Value *val, const AC::BlockWorldPos &samplePoint);
+	static bool boolValue(WGA_Value *val, const AC::BlockWorldPos &samplePoint);
+	static BlockID blockValue(WGA_Value *val, const AC::BlockWorldPos &samplePoint);
 
 private:
 	std::stack<State> stateStack_;

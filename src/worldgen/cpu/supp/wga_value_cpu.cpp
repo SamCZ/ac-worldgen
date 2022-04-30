@@ -23,7 +23,7 @@ WGA_DataRecord_CPU::Ptr WGA_Value_CPU::getDataRecord(const BlockWorldPos &origin
 
 	const Dimensionality dim = dimensionality();
 
-	assert((origin & (chunkSize - 1)) == 0);
+	//assert((origin & (chunkSize - 1)) == 0);
 
 	if(dim == Dimensionality::DConst)
 		key.origin = BlockWorldPos();

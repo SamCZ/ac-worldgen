@@ -1,102 +1,31 @@
-# Speedup tips:
-# - use jom instead of make -> parallel builds
-
 cmake_minimum_required(VERSION 3.20)
-include(ExternalProject)
 
 project(ac_worldgen_master VERSION 0.0.3 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
-list(APPEND EXTERNAL_ARGS
-        -D "CMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}"
-        -D "CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+set(CMAKE_CXX20_STANDARD_COMPILE_OPTION "-std:c++latest")
+set(CMAKE_CXX20_EXTENSION_COMPILE_OPTION "-std:c++latest")
 
-        -G "${CMAKE_GENERATOR}"
-        )
+add_subdirectory(deps)
 
-set(CMAKE_BASE_DIR "${CMAKE_BINARY_DIR}")
-set(PROJECT_BASE_DIR "${PROJECT_SOURCE_DIR}")
+if (MSVC)
+	add_compile_options(/bigobj)
+else()
+	add_compile_options(-Wa,-mbig-obj)
+endif()
 
-include(platform_config.cmake)
+file(GLOB_RECURSE PROJECT_SOURCE_FILES src/*.h src/*.hpp src/*.cpp src/*.cc)
+add_library(ac_worldgen STATIC ${PROJECT_SOURCE_FILES})
+target_include_directories(ac_worldgen PUBLIC src)
 
-# ===========================================
-# Tracy
-# ===========================================
-ExternalProject_Add(
-        tracy
-        SOURCE_DIR "${PROJECT_SOURCE_DIR}/deps/tracy"
-        EXCLUDE_FROM_ALL ON
-        INSTALL_COMMAND "" # Does not have install target
-        CMAKE_ARGS ${EXTERNAL_ARGS}
-        -D TRACY_ENABLE=ON
-        -D TRACY_ON_DEMAND=ON
-)
+target_precompile_headers(ac_worldgen PUBLIC "src/pch.h")
 
-# ===========================================
-# Antlr
-# ===========================================
-ExternalProject_Add(
-        antlr
-        SOURCE_DIR "${PROJECT_SOURCE_DIR}/deps/antlr/runtime/Cpp"
-        EXCLUDE_FROM_ALL ON
+target_compile_definitions(ac_worldgen PUBLIC _USE_MATH_DEFINES)
+target_compile_definitions(ac_worldgen PUBLIC _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 
-        TEST_COMMAND ""
+target_link_libraries(ac_worldgen PUBLIC antlr4_static FastNoise TracyClient)
 
-        CMAKE_ARGS ${EXTERNAL_ARGS}
-        -D WITH_STATIC_CRT=OFF
-        -D "CMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install/antlr"
-)
-
-# ===========================================
-# FastNoise2
-# ===========================================
-ExternalProject_Add(
-        fastNoise2
-        SOURCE_DIR "${PROJECT_SOURCE_DIR}/deps/fastNoise2"
-        EXCLUDE_FROM_ALL ON
-
-        TEST_COMMAND ""
-
-        CMAKE_ARGS ${EXTERNAL_ARGS}
-        -D FASTNOISE2_NOISETOOL=OFF
-        -D FASTNOISE2_TESTS=OFF
-        -D "CMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install/fastNoise2"
-)
-
-
-# ===========================================
-# Worldgen
-# ===========================================
-ExternalProject_Add(x_ac_worldgen
-        SOURCE_DIR "${PROJECT_SOURCE_DIR}/src"
-        BUILD_ALWAYS ON
-        INSTALL_COMMAND ""
-        STEP_TARGETS build
-        CMAKE_ARGS ${EXTERNAL_ARGS}
-        )
-
-add_custom_target(ac_worldgen_nodeploy DEPENDS x_ac_worldgen-build)
-add_custom_target(ac_worldgen_deploy ALL DEPENDS antlr tracy fastNoise2 x_ac_worldgen)
-
-# ===========================================
-# Dummy target for intellisense
-# ===========================================
-add_executable(x_ac_worldgen_dummy WIN32 EXCLUDE_FROM_ALL)
-file(
-        GLOB_RECURSE ac_client_src CONFIGURE_DEPENDS
-        "${PROJECT_BASE_DIR}/src/*.cc"
-        "${PROJECT_BASE_DIR}/src/*.cpp"
-        "${PROJECT_BASE_DIR}/src/*.h"
-)
-target_compile_definitions(x_ac_worldgen_dummy PRIVATE TRACY_ENABLE)
-target_sources(x_ac_worldgen_dummy PRIVATE ${ac_client_src})
-target_precompile_headers(x_ac_worldgen_dummy PRIVATE "${PROJECT_BASE_DIR}/src/pch.h")
-target_include_directories(x_ac_worldgen_dummy PRIVATE "${PROJECT_BASE_DIR}/src")
-target_include_directories(x_ac_worldgen_dummy SYSTEM PRIVATE
-        "${PROJECT_BASE_DIR}/include"
-        "${PROJECT_BASE_DIR}/deps/tracy"
-        "${CMAKE_BASE_DIR}/install/antlr/include"
-        "${CMAKE_BASE_DIR}/install/fastNoise2/include"
-        )
+add_subdirectory(app)

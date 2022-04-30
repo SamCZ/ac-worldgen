@@ -3,11 +3,8 @@
 
 #pragma once
 
-
+#pragma warning(disable: 4251)
 #include "antlr4-runtime.h"
-
-
-
 
 class  WoglacParser : public antlr4::Parser {
 public:

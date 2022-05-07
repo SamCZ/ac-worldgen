@@ -20,4 +20,4 @@ constexpr BlockWorldPos_T blockInChunkPosMask = 0xf;
 using BlockTransformMatrix = Matrix<BlockWorldPos_T, 4, 4>;
 
 static constexpr BlockID blockID_air = 0;
-static constexpr BlockID blockID_undefined = 1;
+static constexpr BlockID blockID_undefined = ~((BlockID)0);

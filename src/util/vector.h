@@ -3,7 +3,6 @@
 #include <type_traits>
 #include <math.h>
 #include <random>
-#include <format>
 
 #include "util/assert.h"
 #include "util/hashutils.h"
@@ -518,15 +517,6 @@ struct std::hash<Vector<T, D>> {
 		return r;
 	}
 };
-
-template<typename T, int D>
-struct std::formatter<Vector<T, D>> : public std::formatter<std::string> {
-
-	auto format(const Vector<T, D> &v, format_context &ctx) {
-		return formatter<string>::format(std::format("({})", ::iterator(v.data).mapx(std::format("{}", x)).join(", ")), ctx);
-	}
-};
-
 
 namespace AC
 {

@@ -28,9 +28,6 @@ public:
 		streamFunction_ = function;
 	}
 
-	std::unique_ptr<std::istream> getFileStream(const std::string &filename, antlr4::ParserRuleContext *ctx);
-
-	inline void setStreamFunction(const std::function<std::unique_ptr<std::istream>(const std::string &filename, antlr4::ParserRuleContext *ctx)>& function) { openSteamFunction_ = function; }
 public:
 	void compile();
 
@@ -47,4 +44,3 @@ private:
 	std::vector<std::shared_ptr<WGLModule>> modules_;
 
 };
-

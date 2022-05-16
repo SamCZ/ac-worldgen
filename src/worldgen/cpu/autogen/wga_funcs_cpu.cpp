@@ -254,7 +254,7 @@ for(int i = 0; i < sz; i++) {
   const Arg1::T arg1 = argh1[i];
 const Arg2::T arg2 = argh2[i];
 
-  data[i] = (Vector2F(arg1, arg2));
+  data[i] = (AC::Vector2F(arg1, arg2));
  }
  return data;
   };
@@ -285,7 +285,7 @@ const int sz = data.size;
 for(int i = 0; i < sz; i++) {
   const Arg1::T arg1 = argh1[i];
 
-  data[i] = (Vector2F(arg1));
+  data[i] = (AC::Vector2F(arg1));
  }
  return data;
   };
@@ -324,7 +324,7 @@ for(int i = 0; i < sz; i++) {
 const Arg2::T arg2 = argh2[i];
 const Arg3::T arg3 = argh3[i];
 
-  data[i] = (Vector3F(arg1, arg2, arg3));
+  data[i] = (AC::Vector3F(arg1, arg2, arg3));
  }
  return data;
   };
@@ -359,7 +359,7 @@ for(int i = 0; i < sz; i++) {
   const Arg1::T arg1 = argh1[i];
 const Arg2::T arg2 = argh2[i];
 
-  data[i] = (Vector3F(arg1, arg2));
+  data[i] = (AC::Vector3F(arg1, arg2));
  }
  return data;
   };
@@ -390,7 +390,7 @@ const int sz = data.size;
 for(int i = 0; i < sz; i++) {
   const Arg1::T arg1 = argh1[i];
 
-  data[i] = (Vector3F(arg1));
+  data[i] = (AC::Vector3F(arg1));
  }
  return data;
   };

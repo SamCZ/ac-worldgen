@@ -24,8 +24,7 @@ public:
 
 };
 
-using WGA_StructureOutputData_CPUPtr = std::shared_ptr<WGA_StructureOutputData_CPU>;
-
+typedef std::shared_ptr<WGA_StructureOutputData_CPU> WGA_StructureOutputData_CPUPtr;
 
 class WGA_StructureOutputDataRecord_CPU : public WGA_DataRecord_CPU {
 

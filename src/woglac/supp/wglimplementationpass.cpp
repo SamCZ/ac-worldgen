@@ -1,6 +1,6 @@
 #include "wglimplementationpass.h"
 
-#include <format>
+#include <fmt/format.h>
 #include <functional>
 
 #include "util/iterators.h"
@@ -68,9 +68,9 @@ void WGLImplementationPass::enterRuleExpansionStatement(WoglacParser::RuleExpans
 
 	if(!target) {}
 	else if(expandsToComponent && target->symbolType() != SymbolType::Component)
-		throw WGLError(std::format("Symbol '{}' is not a structure component.", target->fullName()), ctx->expansionTarget);
+		throw WGLError(fmt::format("Symbol '{}' is not a structure component.", target->fullName()), ctx->expansionTarget);
 	else if(!expandsToComponent && target->symbolType() != SymbolType::Rule)
-		throw WGLError(std::format("Symbol '{}' is not a structure rule.", target->fullName()), ctx->expansionTarget);
+		throw WGLError(fmt::format("Symbol '{}' is not a structure rule.", target->fullName()), ctx->expansionTarget);
 
 	std::vector<std::pair<std::string, WGA_Symbol::PragmaValue >> pragmaSets;
 
@@ -119,11 +119,11 @@ void WGLImplementationPass::enterBiomeParamDefinition(WoglacParser::BiomeParamDe
 void WGLImplementationPass::enterBiomeConditionStatement(WoglacParser::BiomeConditionStatementContext *ctx) {
 	WGLSymbol *target = lookupIdentifier(ctx->target, false)->effectiveTarget();
 	if(target->symbolType() != SymbolType::Biome)
-		throw WGLError(std::format("Symbol '{}' is not a biome (biome condition syntax used).", target->fullName()), ctx->target);
+		throw WGLError(fmt::format("Symbol '{}' is not a biome (biome condition syntax used).", target->fullName()), ctx->target);
 
 	WGLSymbol *param = lookupIdentifier(ctx->param, false);
 	if(param->symbolType() != SymbolType::FieldVariable)
-		throw WGLError(std::format("Symbol '{}' is not a field variable (biome condition syntax used).", param->fullName()), ctx->param);
+		throw WGLError(fmt::format("Symbol '{}' is not a field variable (biome condition syntax used).", param->fullName()), ctx->param);
 
 	const float mean = WGLUtils::numericLiteral(ctx->mean);
 	const float dev = WGLUtils::numericLiteral(ctx->dev);
@@ -141,7 +141,7 @@ void WGLImplementationPass::enterVariableDefinition(WoglacParser::VariableDefini
 	auto val = expression(ctx->val, deps);
 
 	if(val.type != sym->valueType)
-		throw WGLError(std::format("Variable '{}' is defined as type '{}' but the value expression is of type '{}'.", sym->fullName(), WGA_Value::typeNames.at(sym->valueType), WGA_Value::typeNames.at(val.type)), ctx);
+		throw WGLError(fmt::format("Variable '{}' is defined as type '{}' but the value expression is of type '{}'.", sym->fullName(), WGA_Value::typeNames.at(sym->valueType), WGA_Value::typeNames.at(val.type)), ctx);
 
 	ctx_->addApiCmd(sym, deps, [sym, val](WGLAPIContext &ctx) {
 		ctx.addSymbolMapping(sym, ctx.expr(val));
@@ -160,7 +160,7 @@ void WGLImplementationPass::enterParamDefinition(WoglacParser::ParamDefinitionCo
 	auto defaultValue = ctx->defaultValue ? expression(ctx->defaultValue, deps) : WGLExpressionResult{.type = sym->valueType};
 
 	if(defaultValue.type != sym->valueType)
-		throw WGLError(std::format("Structure parameter '{}' is defined as type '{}' but the default value expression is of type '{}'.", sym->fullName(), WGA_Value::typeNames.at(sym->valueType), WGA_Value::typeNames.at(defaultValue.type)), ctx);
+		throw WGLError(fmt::format("Structure parameter '{}' is defined as type '{}' but the default value expression is of type '{}'.", sym->fullName(), WGA_Value::typeNames.at(sym->valueType), WGA_Value::typeNames.at(defaultValue.type)), ctx);
 
 	ctx_->addApiCmd(sym, deps, [sym, parent, defaultValue](WGLAPIContext &ctx) {
 		ctx.addSymbolMapping(sym, ctx.api->grammarSymbolParam(ctx.map<WGA_GrammarSymbol>(parent), sym->name(), sym->valueType, defaultValue.func ? ctx.expr(defaultValue) : nullptr));
@@ -184,10 +184,10 @@ void WGLImplementationPass::enterParamSetStatement(WoglacParser::ParamSetStateme
 		deps.insert(param);
 
 		if(param->symbolType() != SymbolType::BiomeParam)
-			throw WGLError(std::format("Symbol '{}' is not a biome param.", param->fullName()), ctx);
+			throw WGLError(fmt::format("Symbol '{}' is not a biome param.", param->fullName()), ctx);
 
 		if(val.type != param->valueType)
-			throw WGLError(std::format("Biome param '{}' is of type '{}', but type '{}' provided in the specification for biome '{}'.", param->fullName(), WGA_Value::typeNames.at(param->valueType), WGA_Value::typeNames.at(val.type), target->fullName()), ctx);
+			throw WGLError(fmt::format("Biome param '{}' is of type '{}', but type '{}' provided in the specification for biome '{}'.", param->fullName(), WGA_Value::typeNames.at(param->valueType), WGA_Value::typeNames.at(val.type), target->fullName()), ctx);
 
 		ctx_->addApiCmd(nullptr, deps, [target, param, val](WGLAPIContext &ctx) {
 			ctx.map<WGA_Biome>(target)->setParam(ctx.map<WGA_Value>(param), ctx.expr(val));
@@ -250,7 +250,7 @@ void WGLImplementationPass::enterComponentIncludeStatementBlockParam(WoglacParse
 
 	const int id = WGLUtils::numericLiteral(ctx->id);
 	if(!voxParser_.voxels().contains(id)) {
-		std::cerr << std::format("Vox file '{}' does not contain voxels of ID {}", voxParser_.fileName(), id);
+		std::cerr << fmt::format("Vox file '{}' does not contain voxels of ID {}", voxParser_.fileName(), id);
 		return;
 	}
 
@@ -362,7 +362,7 @@ void WGLImplementationPass::enterComponentBlockStatement(WoglacParser::Component
 
 	WGLExpressionResult value = expression(ctx->val, deps);
 	if(value.type != ValueType::Block)
-		throw WGLError(std::format("Structure block statement value expression must be of type 'Block', but '%1' was provided.", WGA_Value::typeNames.at(value.type)), ctx->val);
+		throw WGLError(fmt::format("Structure block statement value expression must be of type 'Block', but '%1' was provided.", WGA_Value::typeNames.at(value.type)), ctx->val);
 
 	ctx_->addApiCmd(nullptr, deps, [component, startPos, endPos, value](WGLAPIContext &ctx) {
 		WGA_Component::Blocks area;
@@ -390,7 +390,7 @@ void WGLImplementationPass::enterStructureConditionStatement(WoglacParser::Struc
 	WGLExpressionResult val = expression(ctx->cond, deps);
 
 	if(val.type != ValueType::Bool)
-		throw WGLError(std::format("Condition statement requires expression of type Bool, {} provided", WGA_Value::typeNames.at(val.type)), ctx);
+		throw WGLError(fmt::format("Condition statement requires expression of type Bool, {} provided", WGA_Value::typeNames.at(val.type)), ctx);
 
 	ctx_->addApiCmd(nullptr, deps, [target, val](WGLAPIContext &ctx) {
 		WGA_GrammarSymbol::Condition cond;
@@ -563,17 +563,17 @@ WGLExpressionResult WGLImplementationPass::expression(WoglacParser::LiteralExpre
 		if(!block)
 			throw WoglacSemanticError(QStringLiteral("Unknown block uid '%1'").arg(uid), this, ctx);*/
 
-		return EXPRESSION_RESULT(ValueType::Block, ctx.api->constBlock(uid), std::format("(CONSTBLOCK;{})", uid));
+		return EXPRESSION_RESULT(ValueType::Block, ctx.api->constBlock(uid), fmt::format("(CONSTBLOCK;{})", uid));
 	}
 
 	if(auto e = ctx->num) {
 		const float val = WGLUtils::numericLiteral(e);
-		return EXPRESSION_RESULT(ValueType::Float, ctx.api->constFloat(val), std::format("(CONSTFLOAT;{})", val));
+		return EXPRESSION_RESULT(ValueType::Float, ctx.api->constFloat(val), fmt::format("(CONSTFLOAT;{})", val));
 	}
 
 	if(auto e = ctx->bool_) {
 		const bool val = WGLUtils::identifier(e) == "true";
-		return EXPRESSION_RESULT(ValueType::Bool, ctx.api->constBool(val), std::format("(CONSTBOOL;{})", val));
+		return EXPRESSION_RESULT(ValueType::Bool, ctx.api->constBool(val), fmt::format("(CONSTBOOL;{})", val));
 	}
 
 	if(auto e = ctx->string) {
@@ -602,7 +602,7 @@ WGLExpressionResult WGLImplementationPass::expression(WoglacParser::ExtendedIden
 	switch(sym->symbolType()) {
 
 		case SymbolType::FieldVariable:
-			return EXPRESSION_RESULT(sym->valueType, ctx.map<WGA_Value>(sym), std::format("(SYMBOL;{})", std::bit_cast<intptr_t>(sym)));
+			return EXPRESSION_RESULT(sym->valueType, ctx.map<WGA_Value>(sym), fmt::format("(SYMBOL;{})", std::bit_cast<intptr_t>(sym)));
 
 		case SymbolType::StructureVariable:
 		case SymbolType::StructureParam: {
@@ -610,19 +610,19 @@ WGLExpressionResult WGLImplementationPass::expression(WoglacParser::ExtendedIden
 			WGLSymbol *scp = currentScope()->effectiveTarget();
 
 			if(symp != scp)
-				throw WGLError(std::format("Local variable '{}' cannot be used outside of the rule/structure scope '{}'", sym->fullName(), symp->fullName()), ctx);
+				throw WGLError(fmt::format("Local variable '{}' cannot be used outside of the rule/structure scope '{}'", sym->fullName(), symp->fullName()), ctx);
 
-			return EXPRESSION_RESULT(sym->valueType, ctx.map<WGA_Value>(sym), std::format("(SYMBOL;{})", std::bit_cast<intptr_t>(sym)));
+			return EXPRESSION_RESULT(sym->valueType, ctx.map<WGA_Value>(sym), fmt::format("(SYMBOL;{})", std::bit_cast<intptr_t>(sym)));
 		}
 
 		case SymbolType::Rule:
-			return EXPRESSION_RESULT(ValueType::Rule, ctx.api->constRule(ctx.map<WGA_Rule>(sym)), std::format("(SYMBOL;{})", std::bit_cast<intptr_t>(sym)));
+			return EXPRESSION_RESULT(ValueType::Rule, ctx.api->constRule(ctx.map<WGA_Rule>(sym)), fmt::format("(SYMBOL;{})", std::bit_cast<intptr_t>(sym)));
 
 		case SymbolType::ComponentNode:
-			return EXPRESSION_RESULT(ValueType::ComponentNode, ctx.api->constComponentNode(ctx.map<WGA_ComponentNode>(sym)), std::format("(SYMBOL;{})", std::bit_cast<intptr_t>(sym)));
+			return EXPRESSION_RESULT(ValueType::ComponentNode, ctx.api->constComponentNode(ctx.map<WGA_ComponentNode>(sym)), fmt::format("(SYMBOL;{})", std::bit_cast<intptr_t>(sym)));
 
 		default:
-			throw WGLError(std::format("Symbol '{}' of type '{}' cannot be used as a value.", sym->fullName(), WGLUtils::getSymbolTypeName(sym->symbolType())), ctx);
+			throw WGLError(fmt::format("Symbol '{}' of type '{}' cannot be used as a value.", sym->fullName(), WGLUtils::getSymbolTypeName(sym->symbolType())), ctx);
 
 	}
 }
@@ -632,12 +632,12 @@ WGLExpressionResult WGLImplementationPass::expression(WoglacParser::BiomeParamEx
 
 	WGLSymbol *param = lookupIdentifier(ctx->param, false);
 	if(param->symbolType() != SymbolType::BiomeParam)
-		throw WGLError(std::format("Symbol '{}' is not a biome param.", param->fullName()), ctx->param);
+		throw WGLError(fmt::format("Symbol '{}' is not a biome param.", param->fullName()), ctx->param);
 
 	deps.insert(param);
 
 	std::vector<WGLExpressionResult> args;
-	args.push_back(EXPRESSION_RESULT(param->valueType, ctx.map<WGA_Value>(param), std::format("(SYMBOL;{})", std::bit_cast<intptr_t>(param))));
+	args.push_back(EXPRESSION_RESULT(param->valueType, ctx.map<WGA_Value>(param), fmt::format("(SYMBOL;{})", std::bit_cast<intptr_t>(param))));
 
 	for(auto e: ctx->params)
 		args.push_back(expression(e, deps));
@@ -649,7 +649,7 @@ WGLExpressionResult WGLImplementationPass::positionExpression(WoglacParser::Posi
 	if(auto e = ctx->vec) {
 		WGLExpressionResult val = expression(e, deps);
 		if(val.type != ValueType::Float3)
-			throw WGLError(std::format("Position expression must evaluate to Float3 (type {} provided).", WGA_Value::typeNames.at(val.type)), ctx);
+			throw WGLError(fmt::format("Position expression must evaluate to Float3 (type {} provided).", WGA_Value::typeNames.at(val.type)), ctx);
 
 		return val;
 	}
@@ -710,7 +710,7 @@ WGLExpressionResult WGLImplementationPass::functionCall(const std::string &funct
 	const WorldGenAPI::Functions &fs = WorldGenAPI::functions();
 
 	if(!fs.nameSet.contains(functionName))
-		throw WGLError(std::format("Function '{}' does not exist.", functionName), ctx);
+		throw WGLError(fmt::format("Function '{}' does not exist.", functionName), ctx);
 
 	const std::string prototype = WorldGenAPI::Function::composePrototype(functionName, iterator(args).mapx(x.type).toList());
 
@@ -718,7 +718,7 @@ WGLExpressionResult WGLImplementationPass::functionCall(const std::string &funct
 	if(const auto i = fs.prototypeMapping.find(prototype); i != fs.prototypeMapping.end())
 		fid = i->second;
 	else
-		throw WGLError(std::format("Function '{}' does not have overload '{}'.\nAcceptable overloads:\n{}", functionName, prototype, iterator(fs.nameMapping.at(functionName)).mapx(fs.list[x].prototype).join("\n")), ctx);
+		throw WGLError(fmt::format("Function '{}' does not have overload '{}'.\nAcceptable overloads:\n{}", functionName, prototype, iterator(fs.nameMapping.at(functionName)).mapx(fs.list[x].prototype).join("\n")), ctx);
 
 	const std::string desc = ctx->getText();
 
@@ -729,7 +729,7 @@ WGLExpressionResult WGLImplementationPass::functionCall(const std::string &funct
 			r->setDescription(desc);
 			return r;
 		},
-		.signature =  std::make_shared<std::string>(std::format("(FUNCCALL;{};{})", prototype, iterator(args).mapx(*x.signature).join(";"))),
+		.signature =  std::make_shared<std::string>(fmt::format("(FUNCCALL;{};{})", prototype, iterator(args).mapx(*x.signature).join(";"))),
 		.type = f.returnValue.type,
 	};
 }

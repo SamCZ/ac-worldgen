@@ -48,15 +48,15 @@ public:
 		return cachedHandle_;
 	}
 
-	inline auto constValue(WGA_DataRecord_CPU::SubKey subKey = 0) {
+	inline typename WGA_ValueRec_CPU<type>::T constValue(WGA_DataRecord_CPU::SubKey subKey = 0) {
 		return dataHandle(AC::BlockWorldPos(), subKey)[0];
 	}
 
-	inline auto chunkValue(const AC::ChunkWorldPos &pos, WGA_DataRecord_CPU::SubKey subKey = 0) {
+	inline typename WGA_ValueRec_CPU<type>::T chunkValue(const AC::ChunkWorldPos &pos, WGA_DataRecord_CPU::SubKey subKey = 0) {
 		return dataHandle(AC::BlockWorldPos::fromChunkBlockIndex(pos, 0, 0), subKey)[0];
 	}
 
-	inline auto sampleAt(const AC::BlockWorldPos &pos, WGA_DataRecord_CPU::SubKey subKey = 0) {
+	inline typename WGA_ValueRec_CPU<type>::T sampleAt(const AC::BlockWorldPos &pos, WGA_DataRecord_CPU::SubKey subKey = 0) {
 		return dataHandle(pos & ~(chunkSize - 1), subKey)[pos];
 	}
 

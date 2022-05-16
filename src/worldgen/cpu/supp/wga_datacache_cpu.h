@@ -2,6 +2,7 @@
 
 #include <unordered_set>
 #include <mutex>
+#include <condition_variable>
 
 #include "util/enumutils.h"
 #include "worldgen/base/supp/wga_value.h"
@@ -12,10 +13,11 @@
 class WGA_DataCache_CPU {
 
 public:
-	using DataRecordPtr = std::shared_ptr<WGA_DataRecord_CPU>;
-	using Dimensionality = WGA_Value::Dimensionality;
-	using Key = WGA_DataRecord_CPU::Key;
-	using Ctor = WGA_DataRecord_CPU::Ctor;
+	typedef std::shared_ptr<WGA_DataRecord_CPU> DataRecordPtr;
+	typedef WGA_Value::Dimensionality Dimensionality;
+	typedef WGA_DataRecord_CPU::Key Key;
+	typedef WGA_DataRecord_CPU::Ctor Ctor;
+
 
 public:
 	WGA_DataCache_CPU();

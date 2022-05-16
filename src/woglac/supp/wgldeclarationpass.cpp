@@ -1,6 +1,6 @@
 #include "wgldeclarationpass.h"
 
-#include <format>
+#include <fmt/format.h>
 
 #include "wglsymbol.h"
 #include "wglerror.h"
@@ -23,7 +23,7 @@ void WGLDeclarationPass::enterScope(WoglacParser::ScopeContext *ctx) {
 		const WGLSymbol::Type targetType = WGLUtils::getSymbolType(ctx->type);
 
 		if(sym->symbolType() != targetType)
-			throw WGLError(std::format("Symbol extension target type mismatch: '{}' expected, but trying to extend as '{}'", WGLUtils::getSymbolTypeName(sym->symbolType()), WGLUtils::getSymbolTypeName(targetType)), ctx);
+			throw WGLError(fmt::format("Symbol extension target type mismatch: '{}' expected, but trying to extend as '{}'", WGLUtils::getSymbolTypeName(sym->symbolType()), WGLUtils::getSymbolTypeName(targetType)), ctx);
 	}
 
 	currentScope_.push(sym);
@@ -38,7 +38,7 @@ void WGLDeclarationPass::enterRuleExpansionStatement(WoglacParser::RuleExpansion
 	WGLSymbol *effectiveTarget = directTarget->effectiveTarget();
 
 	if(effectiveTarget->symbolType() != SymbolType::Rule)
-		throw WGLError(std::format("Target '{}' for a rule expansion is not a rule.", effectiveTarget->fullName()), ctx);
+		throw WGLError(fmt::format("Target '{}' for a rule expansion is not a rule.", effectiveTarget->fullName()), ctx);
 
 	WGLSymbol *sym = new WGLSymbol(ctx_, directTarget, {}, SymbolType::RuleExpansion, ctx);
 	currentScope_.push(sym);
@@ -59,7 +59,7 @@ void WGLDeclarationPass::enterParamDefinition(WoglacParser::ParamDefinitionConte
 	checkTargetTypeMatch(ctx->targetType, effectiveTarget, ctx);
 
 	if(!allowedTargets.contains(+effectiveTarget->symbolType()))
-		throw WGLError(std::format("Target '{}': symbol type '{}' cannot have local params.", effectiveTarget->fullName(), WGLUtils::getSymbolTypeName(effectiveTarget->symbolType())), ctx);
+		throw WGLError(fmt::format("Target '{}': symbol type '{}' cannot have local params.", effectiveTarget->fullName(), WGLUtils::getSymbolTypeName(effectiveTarget->symbolType())), ctx);
 
 	WGLSymbol *sym = new WGLSymbol(ctx_, directTarget, WGLUtils::identifier(ctx->id), SymbolType::StructureParam, ctx);
 	sym->valueType = WGA_Value::typesByName.at(WGLUtils::identifier(ctx->type));
@@ -88,7 +88,7 @@ void WGLDeclarationPass::enterVariableDefinition(WoglacParser::VariableDefinitio
 	if(auto i = varSymbolTypeFromTargetType.find(+effectiveTarget->symbolType()); i != varSymbolTypeFromTargetType.end())
 		symbolType = i->second;
 	else
-		throw WGLError(std::format("Variables are not allowed inside '{}'.", WGLUtils::getSymbolTypeName(effectiveTarget->symbolType())), ctx);
+		throw WGLError(fmt::format("Variables are not allowed inside '{}'.", WGLUtils::getSymbolTypeName(effectiveTarget->symbolType())), ctx);
 
 	WGLSymbol *sym = new WGLSymbol(ctx_, directTarget, WGLUtils::identifier(ctx->id->id.back()), symbolType, ctx);
 	sym->isExport = ctx->exportFlag;

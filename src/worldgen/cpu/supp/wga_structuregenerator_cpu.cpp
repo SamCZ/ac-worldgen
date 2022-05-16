@@ -1,7 +1,7 @@
 #include "wga_structuregenerator_cpu.h"
 
 #include <iostream>
-#include <format>
+#include <fmt/format.h>
 
 #include "util/scopeexit.h"
 #include "util/tracyutils.h"
@@ -55,18 +55,18 @@ bool WGA_StructureGenerator_CPU::process() {
 
 	while(true) {
 		if(ruleExpansions_.empty()) {
-			std::cerr << std::format("Failed to spawn structure: no solution found, tried all possible expansions. ({})", expansionCount_);
+			std::cerr << fmt::format("Failed to spawn structure: no solution found, tried all possible expansions. ({})", expansionCount_);
 			return false;
 		}
 
 		expansionCount_++;
 		if(expansionCount_ >= maxExpansionCount_) {
-			std::cerr << std::format("Failed to spawn structure: maximum expansion count exceeded ({})", maxExpansionCount_);
+			std::cerr << fmt::format("Failed to spawn structure: maximum expansion count exceeded ({})", maxExpansionCount_);
 			return false;
 		}
 
 		if(ruleExpansions_.size() > maxStackDepth_) {
-			std::cerr << std::format("Failed to spawn structure: maximum stack depth exceeded ({})", maxStackDepth_);
+			std::cerr << fmt::format("Failed to spawn structure: maximum stack depth exceeded ({})", maxStackDepth_);
 			return false;
 		}
 
@@ -516,7 +516,7 @@ WGA_StructureGenerator_CPU::RuleExpansionStatePtr WGA_StructureGenerator_CPU::ne
 				const auto nodeList = comp->nodes(rex->node());
 
 				if(nodeList.empty()) {
-					std::cerr << std::format("There are no '{}' nodes in the '{}' component.\n", rex->node(), comp->description());
+					std::cerr << fmt::format("There are no '{}' nodes in the '{}' component.\n", rex->node(), comp->description());
 					continue;
 				}
 
@@ -671,7 +671,7 @@ void WGA_StructureGenerator_CPU::DataContext::load(WorldGenAPI_CPU *api, const D
 	for(const WGA_GrammarSymbol::ParamDeclare &pd: sym->paramDeclares()) {
 		const std::string key = paramKey(pd.paramName, pd.type);
 		if(!paramInputs_[key])
-			throw std::exception(std::format("Param value not defined for param {}", pd.paramName).c_str());
+			throw std::runtime_error(fmt::format("Param value not defined for param {}", pd.paramName).c_str());
 	}
 
 	paramOutputs_ = paramInputs_;
@@ -723,5 +723,5 @@ WGA_Value::Dimensionality WGA_StructureGenerator_CPU::DataContext::getInputParam
 }
 
 std::string WGA_StructureGenerator_CPU::DataContext::paramKey(const std::string &paramName, WGA_Value::ValueType type) {
-	return std::format("{}#{}", paramName, WGA_Value::typeNames.at(type));
+	return fmt::format("{}#{}", paramName, WGA_Value::typeNames.at(type));
 }

@@ -4,7 +4,7 @@
 
 #include "wglinclude.h"
 
-class WGLError {
+class WGLError : std::exception {
 
 public:
 	WGLError(const std::string &msg, antlr4::ParserRuleContext *ctx);

@@ -3,13 +3,13 @@
 #include <iostream>
 #include <cmath>
 #include <set>
-#include <format>
+#include <fmt/format.h>
 
 #include "util/iterators.h"
 #include "util/macroutils.h"
 
 const WorldGenAPI::Functions &WorldGenAPI::functions() {
-	static const Functions fs = [] {
+	static const Functions fs = [] () -> Functions {
 		Functions fs;
 		Function f;
 
@@ -34,7 +34,7 @@ const WorldGenAPI::Functions &WorldGenAPI::functions() {
   finalize();
 
 #define ARG_ARG(name, ai, i, Rest) \
-  f.arguments[i-1] = FunctionArgument(f.arguments[ai-1].type, #name); \
+  f.arguments[i-1] = FunctionArgument(f.arguments[(ai)-1].type, #name); \
   Rest
 #define ARG_T(name, T, i, Rest) \
   f.arguments[i-1] = FunctionArgument(Type::T, #name); \
@@ -52,6 +52,10 @@ const WorldGenAPI::Functions &WorldGenAPI::functions() {
 
 		WORLDGEN_FUNCTIONS
 
+
+		//FUNC(worldPos, 0, (void), (T, pos, Float3), DIM_C(3D), (INLINE, data.worldPos(key.origin, i).to<float>()), "Returns world position of the currently calculated block.")
+
+
 #include "worldgen/util/wg_macro_undef.h"
 
 		return fs;
@@ -64,7 +68,7 @@ WorldGenAPI::~WorldGenAPI() {
 }
 
 std::string WorldGenAPI::Function::composePrototype(const std::string &functionName, const std::vector<WGA_Value::ValueType> &argTypes) {
-	return std::format("{}({})", functionName, iterator(argTypes).mapx(WGA_Value::typeNames.at(x)).join(", "));
+	return fmt::format("{}({})", functionName, iterator(argTypes).mapx(WGA_Value::typeNames.at(x)).join(", "));
 }
 
 void WorldGenAPI::Functions::generateDocumentation() const {
@@ -86,10 +90,10 @@ void WorldGenAPI::Functions::generateDocumentation() const {
 
 		for(const WorldGenAPI::FunctionID fid: functions.nameMapping.at(fn)) {
 			const WorldGenAPI::Function &f = functions.list[fid];
-			const std::string prototype = std::format("{} {}({})\n",
+			const std::string prototype = fmt::format("{} {}({})\n",
 			                                          WGA_Value::typeNames.at(f.returnValue.type),
 			                                          f.name,
-			                                          iterator(f.arguments).mapx(std::format("{} {}", WGA_Value::typeNames.at(x.type), x.name)).join(", ")
+			                                          iterator(f.arguments).mapx(fmt::format("{} {}", WGA_Value::typeNames.at(x.type), x.name)).join(", ")
 			);
 
 			if(mentionedPrototypes.contains(prototype))

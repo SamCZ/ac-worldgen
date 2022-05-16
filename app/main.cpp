@@ -3,7 +3,9 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
-#include <format>
+#include <fmt/format.h>
+#include <thread>
+#include <condition_variable>
 #include <string>
 #include <queue>
 
@@ -103,7 +105,7 @@ int main(int argc, char *argv[]) {
 				showHelp = true;
 
 			else {
-				std::cout << std::format("Unknown parameter '{}'.\n", arg);
+				std::cout << fmt::format("Unknown parameter '{}'.\n", arg);
 				return 1;
 			}
 		}
@@ -148,7 +150,7 @@ int main(int argc, char *argv[]) {
 
 		if(exportList) {
 			for(auto it = exports.begin(), e = exports.end(); it != e; it++)
-				std::cout << std::format("%1: %2\n", it->first, WGA_Value::typeNames.at(it->second->valueType()));
+				std::cout << fmt::format("%1: %2\n", it->first, WGA_Value::typeNames.at(it->second->valueType()));
 
 			return 0;
 		}
@@ -216,7 +218,7 @@ int main(int argc, char *argv[]) {
 				std::cin >> valueType;
 				if(WGA_Value::typeNames.at(val->valueType()) != valueType) {
 					std::unique_lock _ul(stdoutMutex);
-					std::cerr << std::format("Export '{}' is of type '{}', but '{}' expected.\n", var, WGA_Value::typeNames.at(val->valueType()), valueType);
+					std::cerr << fmt::format("Export '{}' is of type '{}', but '{}' expected.\n", var, WGA_Value::typeNames.at(val->valueType()), valueType);
 					return 1;
 				}
 
@@ -241,7 +243,7 @@ int main(int argc, char *argv[]) {
 									__debugbreak();
 						}*/
 
-						const size_t bytes = sizeof(WGA_ValueRec_CPU<vt>::T) * h.size;
+						const size_t bytes = sizeof(typename WGA_ValueRec_CPU<vt>::T) * h.size;
 						r.data.resize(bytes);
 						memcpy(r.data.data(), reinterpret_cast<const char *>(h.data), bytes);
 						return r;
@@ -256,7 +258,7 @@ int main(int argc, char *argv[]) {
 
 				else {
 					std::unique_lock _l(stdoutMutex);
-					std::cerr << std::format("Unsupported export value type: {}", WGA_Value::typeNames.at(val->valueType()));
+					std::cerr << fmt::format("Unsupported export value type: {}", WGA_Value::typeNames.at(val->valueType()));
 					return 1;
 				}
 
@@ -264,7 +266,7 @@ int main(int argc, char *argv[]) {
 					const Data d = f();
 					std::unique_lock _ul(stdoutMutex);
 
-					std::cout << std::format("data {} {} {} {} {}\n", pos.x(), pos.y(), pos.z(), var, d.data.size());
+					std::cout << fmt::format("data {} {} {} {} {}\n", pos.x(), pos.y(), pos.z(), var, d.data.size());
 					std::cout.write(d.data.data(), d.data.size());
 					std::cout.flush();
 				};
@@ -278,7 +280,7 @@ int main(int argc, char *argv[]) {
 			}
 
 			else
-				throw std::exception(std::format("Unknown message type: {}", type).c_str());
+				throw std::runtime_error(fmt::format("Unknown message type: {}", type).c_str());
 
 		}
 

@@ -1,7 +1,8 @@
 #include "wglcontext.h"
 
-#include "util/iterators.h"
+#include <fmt/format.h>
 
+#include "util/iterators.h"
 #include "wglerror.h"
 
 WGLContext::WGLContext() {
@@ -65,7 +66,7 @@ void WGLContext::checkCircularDependencies() {
 		WGLSymbol *l = it->first, *r = unresolvedApiCmds_[it->second].definingSymbol;
 		const std::string line = r ? std::to_string(r->declarationAst_->getStart()->getLine()) : std::string{};
 
-		err.push_back(std::format("[{}] {} -> {}", line, r ? r->fullName() : "??", l ? l->fullName() : "??"));
+		err.push_back(fmt::format("[{}] {} -> {}", line, r ? r->fullName() : "??", l ? l->fullName() : "??"));
 	}
 
 	throw WGLError(iterator(err).join('\n'), nullptr);

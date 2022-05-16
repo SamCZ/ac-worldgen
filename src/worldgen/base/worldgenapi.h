@@ -6,6 +6,7 @@
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
+#include <fmt/format.h>
 
 #include "supp/wga_value.h"
 #include "supp/wga_biome.h"
@@ -232,7 +233,7 @@ public:
 
 	inline void setBiomeGridSize(BlockWorldPos_T set) {
 		if(set < 16 || !std::has_single_bit(static_cast<uint64_t>(set)))
-			throw std::exception("Biome grid size must be larger than 16 and be power of 2.");
+			throw std::runtime_error("Biome grid size must be larger than 16 and be power of 2.");
 
 		biomeGridSize_ = set;
 	}
@@ -252,7 +253,7 @@ public:
 	inline WGA_Value *constBlock(const std::string &uid) {
 		const auto r = blockUIDMapping_.find(uid);
 		if(r == blockUIDMapping_.end())
-			throw std::exception(std::format("Block UID '{}' not defined.", uid).c_str());
+			throw std::runtime_error(fmt::format("Block UID '{}' not defined.", uid).c_str());
 
 		return constBlock(r->second);
 	}

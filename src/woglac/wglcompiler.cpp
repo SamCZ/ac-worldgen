@@ -2,7 +2,7 @@
 #include "supp/wglinclude.h"
 
 #include <fstream>
-#include <format>
+#include <fmt/format.h>
 
 #include "util/iterators.h"
 
@@ -16,7 +16,7 @@
 
 class ANTLRErrorHandler : public antlr4::BaseErrorListener {
 	virtual void syntaxError(antlr4::Recognizer *recognizer, antlr4::Token *offendingSymbol, size_t line, size_t charPositionInLine, const std::string &msg, std::exception_ptr e) override {
-		throw WGLError(std::format("Syntax error: {} on line {} ({})", msg.c_str(), line, charPositionInLine), nullptr);
+		throw WGLError(fmt::format("Syntax error: {} on line {} ({})", msg.c_str(), line, charPositionInLine), nullptr);
 	}
 };
 
@@ -32,7 +32,7 @@ WGLCompiler::WGLCompiler() {
 		f->open(file, std::ios::in | std::ios::binary);
 
 		if(!f->good())
-			throw std::exception(std::format("Could not open VOX file '{}' for reading.", file).c_str());
+			throw std::runtime_error(fmt::format("Could not open VOX file '{}' for reading.", file).c_str());
 
 		return f;
 	};
@@ -54,12 +54,12 @@ std::string WGLCompiler::lookupFile(const std::string &filename, antlr4::ParserR
 			return filePath;
 	}
 
-	throw WGLError(std::format("Failed to lookup file '{}' in directories:\n{}", filename, iterator(lookupDirectories_).join('\n')), ctx);
+	throw WGLError(fmt::format("Failed to lookup file '{}' in directories:\n{}", filename, iterator(lookupDirectories_).join('\n')), ctx);
 }
 
 std::unique_ptr<std::istream> WGLCompiler::getFileStream(const std::string &filename, antlr4::ParserRuleContext *ctx) {
 	if (openSteamFunction_ == nullptr)
-		throw std::exception("Stream function not set !");
+		throw std::runtime_error("Stream function not set !");
 
 	return openSteamFunction_(filename, ctx);
 }
@@ -91,7 +91,7 @@ void WGLCompiler::compile() {
 				modules_.push_back(m);
 			}
 			catch(const WGLError &e) {
-				throw std::exception(std::format("Error when compiling WOGLAC source '{}': {}", s, e.message()).c_str());
+				throw std::runtime_error(fmt::format("Error when compiling WOGLAC source '{}': {}", s, e.message()).c_str());
 			}
 		}
 
@@ -116,7 +116,7 @@ void WGLCompiler::compile() {
 		context_->checkCircularDependencies();
 	}
 	catch(const WGLError &e) {
-		throw std::exception(std::format("WOGLAC error: {}", e.message()).c_str());
+		throw std::runtime_error(fmt::format("WOGLAC error: {}", e.message()).c_str());
 	}
 }
 

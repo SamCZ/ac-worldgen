@@ -250,7 +250,7 @@ public:
 
 };
 
-auto iteratorIota(size_t n = -1) {
+static auto iteratorIota(size_t n = -1) {
 	struct I {
 		using T = size_t;
 		const T n;
@@ -267,7 +267,7 @@ auto iteratorIota(size_t n = -1) {
 
 /// Standard begin/end based iterator
 template<typename IT, typename E>
-auto iteratorStd(const IT &it, const E &end) {
+static auto iteratorStd(const IT &it, const E &end) {
 	struct I {
 		using T = std::iter_value_t<IT>;
 		IT it;
@@ -285,13 +285,13 @@ auto iteratorStd(const IT &it, const E &end) {
 /// Standard begin/end based iterator
 template<typename R>
 requires std::ranges::range<R>
-auto iterator(const R &range) {
+static auto iterator(const R &range) {
 	return iteratorStd(std::ranges::cbegin(range), std::ranges::cend(range));
 }
 
 /// Std based iterator, returns std::pair(it.key(), it.value())
 template<typename C>
-auto iteratorAssoc(const C &container) {
+static auto iteratorAssoc(const C &container) {
 	struct I {
 		using T = std::pair<std::remove_cvref_t<decltype(container.begin().key())>, std::remove_cvref_t<decltype(container.begin().value())>>;
 		decltype(container.begin()) it;
@@ -308,7 +308,7 @@ auto iteratorAssoc(const C &container) {
 
 /// Std based iterator, returns the underlying std iterator
 template<typename C>
-auto iteratorIt(const C &container) {
+static auto iteratorIt(const C &container) {
 	struct I {
 		using T = const decltype(container.begin());
 		decltype(container.begin()) it;
@@ -325,7 +325,7 @@ auto iteratorIt(const C &container) {
 
 /// Std based iterator, iterates over container.find(key) (while it != end && it.key() == key), returns it.value()
 template<typename C, typename K>
-auto iteratorFind(const C &container, const K &key) {
+static auto iteratorFind(const C &container, const K &key) {
 	struct I {
 		using T = std::remove_cvref_t<decltype(*container.find(key))>;
 		decltype(container.find(key)) it;

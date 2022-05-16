@@ -3,6 +3,8 @@
 #include "util/iterators.h"
 #include "util/macroutils.h"
 
+#include "defines.h"
+
 #include "../supp/wga_fillfunc_cpu.h"
 
 #include "wga_biomefuncs_cpu.h"
@@ -12,7 +14,7 @@
 #include "wga_samplingfuncs_cpu.h"
 
 std::unordered_map<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> WGA_Funcs_CPU::functions() {
-	static const auto result = [] {
+	static const auto result = [] () -> std::unordered_map<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> {
 		std::unordered_map<WorldGenAPI::FunctionID, Func> result;
 
 #include "worldgen/util/wg_macro_def.h"
@@ -20,9 +22,9 @@ std::unordered_map<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> WGA_Funcs_CPU::
 #define DIM_MAX_2(v1, v2) std::max(v1, v2)
 #define DIM_MIN_2(v1, v2) std::min(v1, v2)
 #define DIM_C(c) WGA_Value::Dimensionality::D ## c
-#define DIM_ARG(i) args[i-1]->dimensionality()
+#define DIM_ARG(i) args[(i)-1]->dimensionality()
 
-#define ARG_DEF(i) Arg ## i argv ## i = Arg ## i(args[i-1]);
+#define ARG_DEF(i) Arg ## i argv ## i = Arg ## i(args[(i)-1]);
 #define IMPL_EXT_ARG(i) , argv ## i
 #define IMPL_INLINE_ARG(i) Arg ## i::DataHandle argh ## i = argv ## i.dataHandle(key.origin, key.subKey);
 #define IMPL_INLINE_ARG2(ix) const Arg ## ix::T arg ## ix = argh ## ix[i];
@@ -70,6 +72,8 @@ std::unordered_map<WorldGenAPI::FunctionID, WGA_Funcs_CPU::Func> WGA_Funcs_CPU::
 #define FUNC(funcName, argCount, args, returnType, dim, impl, desc, ...) DEFER(ARGS_ ## argCount)(DEFER(DEFER args), returnType, dim, argCount, impl, funcName)
 
 		int i = 0;
+
+		//FUNC(WGA_StructureFuncs_CPU::worldPos, 0, (), (T, pos, Float3), DIM_C(3D), (INLINE, data.worldPos(key.origin, i).to<float>()), "Returns world position of the currently calculated block.")
 		WORLDGEN_FUNCTIONS
 
 

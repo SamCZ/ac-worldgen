@@ -1,6 +1,7 @@
 #include "wglsymbol.h"
 
 #include <regex>
+#include <fmt/format.h>
 
 #include "util/enumutils.h"
 
@@ -16,7 +17,7 @@ WGLSymbol::WGLSymbol(WGLContext *context, WGLSymbol *parent, const std::string &
 	fullName_ = name_;
 
 	if(fullName_.empty())
-		fullName_ = std::format("(anonymous {})", WGLUtils::getSymbolTypeName(type));
+		fullName_ = fmt::format("(anonymous {})", WGLUtils::getSymbolTypeName(type));
 
 	desc_ = fullName_;
 	if(declarationAst_ && declarationAst_->start && declarationAst_->stop && declarationAst_->start->getTokenSource()) {
@@ -41,13 +42,13 @@ WGLSymbol::WGLSymbol(WGLContext *context, WGLSymbol *parent, const std::string &
 			auto &child = parent_->childrenByName_[name_];
 
 			if(child)
-				throw WGLError(std::format("Symbol '{}' redefinition.", child->fullName()), declarationAst_);
+				throw WGLError(fmt::format("Symbol '{}' redefinition.", child->fullName()), declarationAst_);
 
 			child = this;
 		}
 
 		if(!parent_->fullName().empty())
-			fullName_ = std::format("{}.{}", parent_->fullName(), name_);
+			fullName_ = fmt::format("{}.{}", parent_->fullName(), name_);
 	}
 
 	effectiveTarget_ = this;
@@ -67,7 +68,7 @@ WGLSymbol *WGLSymbol::resolveIdentifier(const std::string &id, antlr4::ParserRul
 		return f->second;
 
 	if(throwError)
-		throw WGLError(std::format("Failed to resolve identifier '{}' in scope '{}'", id, fullName()), ctx);
+		throw WGLError(fmt::format("Failed to resolve identifier '{}' in scope '{}'", id, fullName()), ctx);
 
 	return nullptr;
 }

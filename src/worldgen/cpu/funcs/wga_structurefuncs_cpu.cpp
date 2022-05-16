@@ -1,7 +1,7 @@
 #include "wga_structurefuncs_cpu.h"
 
 #include <iostream>
-#include <format>
+#include <fmt/format.h>
 
 #include "util/tracyutils.h"
 
@@ -44,12 +44,12 @@ void WGA_StructureFuncs_CPU::spawn2D(Api api, Key key, DH <VT::Block> result, V 
 }
 
 void WGA_StructureFuncs_CPU::worldPos(Api api, Key key, DH <VT::Float3> result, V <VT::ComponentNode> node) {
-	WGA_SF_NODE_POS_SHENANIGANS(nodeWorldPos.to<float>())
+	//WGA_SF_NODE_POS_SHENANIGANS(nodeWorldPos.to<float>())
 }
 
 void WGA_StructureFuncs_CPU::worldPos(WGA_Funcs_CPU::Api api, const WGA_DataRecord_CPU::Key &key, DH <WGA_Value::ValueType::Float3> result, V <WGA_Value::ValueType::Float3> localPos) {
 	if(!api->structureGen)
-		throw std::exception("localPos() called outside structure generation");
+		throw std::runtime_error("localPos() called outside structure generation");
 
 	const BlockTransformMatrix m = api->structureGen->currentDataContext()->localToWorldMatrix();
 
@@ -61,7 +61,7 @@ void WGA_StructureFuncs_CPU::worldPos(WGA_Funcs_CPU::Api api, const WGA_DataReco
 
 void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float3> result) {
 	if(!api->structureGen)
-		throw std::exception("localPos() called outside structure generation");
+		throw std::runtime_error("localPos() called outside structure generation");
 
 	const BlockTransformMatrix m = api->structureGen->currentDataContext()->localToWorldMatrix().nonScalingInverted();
 	const AC::BlockWorldPos base = m * result.worldPos(key.origin, 0);
@@ -83,7 +83,7 @@ void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key
 
 void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, const WGA_DataRecord_CPU::Key &key, DH <WGA_Value::ValueType::Float3> result, V <WGA_Value::ValueType::Float3> worldPos) {
 	if(!api->structureGen)
-		throw std::exception("localPos() called outside structure generation");
+		throw std::runtime_error("localPos() called outside structure generation");
 
 	const BlockTransformMatrix m = api->structureGen->currentDataContext()->localToWorldMatrix().nonScalingInverted();
 
@@ -95,7 +95,7 @@ void WGA_StructureFuncs_CPU::localPos(WGA_Funcs_CPU::Api api, const WGA_DataReco
 
 void WGA_StructureFuncs_CPU::localSeed(WGA_Funcs_CPU::Api api, WGA_Funcs_CPU::Key key, DH <WGA_Value::ValueType::Float> result) {
 	if(!api->structureGen)
-		throw std::exception("localSeed() called outside structure generation");
+		throw std::runtime_error("localSeed() called outside structure generation");
 
 	// Mod by 65535 so the float does not lose precision, should be okay for most shenanigans
 	result[0] = Vector<float, 1>(api->structureGen->currentDataContext()->seed() % 65535);
@@ -107,7 +107,7 @@ void WGA_StructureFuncs_CPU::distanceTo(Api api, Key key, DH <VT::Float> result,
 
 void WGA_StructureFuncs_CPU::randL(WGA_Funcs_CPU::Api api, const WGA_DataRecord_CPU::Key &key, WGA_Funcs_CPU::DH<VT::Float> result, WGA_Funcs_CPU::V<VT::Float> seed) {
 	if(!api->structureGen)
-		throw std::exception("localSeed() called outside structure generation");
+		throw std::runtime_error("localSeed() called outside structure generation");
 
 	const Seed seedv = WorldGen_CPU_Utils::hash(static_cast<Seed>(seed.constValue()), api->structureGen->currentDataContext()->seed());
 	result[0] = static_cast<float>(seedv & 65535) / 65535.0f;

@@ -21,7 +21,7 @@ WGA_DataCache_CPU::WGA_DataCache_CPU() {
 		for(int j = 0; j < cacheDivisions; j++)
 			cacheData_[i][j].cache.setMemoryCapacity(std::max<size_t>(1, cacheSizes[i] / cacheDivisions));
 
-		//TracyPlotConfig(TracyUtils::mapName(std::format("dataCacheHitRate[{}]", i)), tracy::PlotFormatType::Percentage);
+		//TracyPlotConfig(TracyUtils::mapName(fmt::format("dataCacheHitRate[{}]", i)), tracy::PlotFormatType::Percentage);
 	}
 }
 
@@ -32,7 +32,7 @@ WGA_DataCache_CPU::~WGA_DataCache_CPU() {
 WGA_DataCache_CPU::DataRecordPtr WGA_DataCache_CPU::get(const WGA_DataRecord_CPU::Key &key, const WGA_DataRecord_CPU::Ctor &ctor) {
 	ASSERT(key.origin.xy() % chunkSize == 0);
 
-	DataRecordPtr result;
+	WGA_DataCache_CPU::DataRecordPtr result;
 
 	const CacheType cacheType = getCacheType(key.symbol, key.subKey);
 	const int divisionIx = HashUtils::multiHash(key.symbol, key.origin.x() / 16, key.origin.y() / 16) % cacheDivisions;

@@ -1,7 +1,7 @@
 #include "voxparser.h"
 
 #include <fstream>
-#include <format>
+#include <fmt/format.h>
 #include <sstream>
 
 template<typename T>
@@ -10,7 +10,7 @@ T readPrimitive(std::basic_istream<char> &stream) {
 	stream.read(reinterpret_cast<char *>(&result), sizeof(result));
 
 	if(!stream.good())
-		throw std::exception(std::format("Invalid data (RP) {}", stream.gcount()).c_str());
+		throw std::runtime_error(fmt::format("Invalid data (RP) {}", stream.gcount()).c_str());
 
 	return result;
 }
@@ -22,23 +22,23 @@ void VOXParser::parseData(std::unique_ptr<std::istream> stream) {
 	prefix.resize(4);
 	stream->read(prefix.data(), prefix.size());
 	if(prefix != "VOX ")
-		throw std::exception("Provided file is not of the VOX file format");
+		throw std::runtime_error("Provided file is not of the VOX file format");
 
 	const auto fileVersion = readPrimitive<uint32_t>(*stream);
 	if(fileVersion != 150 && fileVersion != 200)
-		throw std::exception(std::format("Unsupported vox file format version ({})", fileVersion).c_str());
+		throw std::runtime_error(fmt::format("Unsupported vox file format version ({})", fileVersion).c_str());
 
 	// Process main chunk
 	{
 		const Chunk mainChunk = readChunk(*stream);
 		if(mainChunk.name != "MAIN")
-			throw std::exception("MAIN chunk expected");
+			throw std::runtime_error("MAIN chunk expected");
 
 		if(stream->peek() != EOF)
-			throw std::exception("There should be nothing left after the main chunk");
+			throw std::runtime_error("There should be nothing left after the main chunk");
 
 		if(!mainChunk.data.empty())
-			throw std::exception("Main chunk should not have any data");
+			throw std::runtime_error("Main chunk should not have any data");
 
 		std::istringstream mb(mainChunk.childrenChunks);
 
@@ -46,7 +46,7 @@ void VOXParser::parseData(std::unique_ptr<std::istream> stream) {
 			const Chunk ch = readChunk(mb);
 
 			if(!ch.childrenChunks.empty())
-				throw std::exception("Invalid data (3)");
+				throw std::runtime_error("Invalid data (3)");
 
 			std::istringstream cb(ch.data);
 
@@ -56,7 +56,7 @@ void VOXParser::parseData(std::unique_ptr<std::istream> stream) {
 				};
 
 				if(!voxels_.empty())
-					throw std::exception("Multiple models are not supported");
+					throw std::runtime_error("Multiple models are not supported");
 
 				auto numVoxels = readPrimitive<uint32_t>(cb);
 				while(numVoxels--) {
@@ -70,7 +70,7 @@ void VOXParser::parseData(std::unique_ptr<std::istream> stream) {
 				continue;
 
 			if(cb.peek() != EOF)
-				throw std::exception("Invalid data (4)");
+				throw std::runtime_error("Invalid data (4)");
 		}
 	}
 }
@@ -100,7 +100,7 @@ VOXParser::Chunk VOXParser::readChunk(std::basic_istream<char> &b) {
 	b.read(chunk.childrenChunks.data(), childrenSize);
 
 	if(!b.good())
-		throw std::exception("Invalid data (unexpected EOF)");
+		throw std::runtime_error("Invalid data (unexpected EOF)");
 
 	return chunk;
 }

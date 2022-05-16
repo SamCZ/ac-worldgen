@@ -1,8 +1,11 @@
 #pragma once
 
 #include "wga_funcs_cpu.h"
+#include "defines.h"
 
+#include "util/vector.h"
 #include "util/quickcache.h"
+#include "util/blockworldpos.h"
 
 #include "worldgen/base/supp/wga_componentnode.h"
 
@@ -56,6 +59,14 @@ private:
 	struct SpawnRec {
 		AC::BlockWorldPos origin;
 		WGA_Rule *entryRule;
+
+		SpawnRec() = default;
+
+		SpawnRec(AC::BlockWorldPos&& pos, WGA_Rule*&& rule)
+		{
+			origin = pos;
+			entryRule = rule;
+		}
 	};
 	using SpawnList = std::vector<SpawnRec>;
 	using SpawnFunc =
@@ -70,6 +81,7 @@ private:
 };
 
 template<WGA_StructureFuncs_CPU::VT t>
-void WGA_StructureFuncs_CPU::sampleAt(Api api, Key key, DH <t> result, V <t> value, V <VT::ComponentNode> node) {
+void WGA_StructureFuncs_CPU::sampleAt(Api api, Key key, DH <t> result, V <t> value, V <VT::ComponentNode> node)
+{
 	WGA_SF_NODE_POS_SHENANIGANS(value.sampleAt(nodeWorldPos))
 }

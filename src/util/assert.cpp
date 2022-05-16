@@ -1,9 +1,9 @@
-#include "assert.h"
+#include <cassert>
 
 #include <iostream>
-#include <format>
+#include <fmt/format.h>
 
 void assertError(const char *assert, const char *file, int line, const std::string &msg) {
-	std::cerr << std::format("\n!!! assert FAILURE ({}:{}): {}\n", file, line, !msg.empty() ? msg : assert);
+	std::cerr << fmt::format("\n!!! assert FAILURE ({}:{}): {}\n", file, line, !msg.empty() ? msg : assert);
 	throw AssertFailureException();
 }

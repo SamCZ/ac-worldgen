@@ -28,6 +28,9 @@ target_precompile_headers(ac_worldgen PUBLIC "src/pch.h")
 target_compile_definitions(ac_worldgen PUBLIC _USE_MATH_DEFINES)
 target_compile_definitions(ac_worldgen PUBLIC _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 
-target_link_libraries(ac_worldgen PUBLIC antlr4_static FastNoise TracyClient)
+# If enabled outputs file after preprocessing
+#target_compile_options(ac_worldgen PRIVATE -E)
+
+target_link_libraries(ac_worldgen PUBLIC antlr4_static FastNoise TracyClient fmt)
 
 add_subdirectory(app)

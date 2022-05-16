@@ -1,6 +1,7 @@
 #include "wglpass.h"
-
 #include "wglerror.h"
+
+#include <fmt/format.h>
 
 WGLPass::WGLPass() {
 	currentScope_.push(nullptr);
@@ -37,7 +38,7 @@ WGLSymbol *WGLPass::lookupIdentifier(WoglacParser::ExtendedIdentifierContext *ei
 	}
 
 	if(!result)
-		throw WGLError(std::format("Failed to lookup identifier '{}' in scope '{}'.", baseId->getText(), currentScope()->fullName()), eid);
+		throw WGLError(fmt::format("Failed to lookup identifier '{}' in scope '{}'.", baseId->getText(), currentScope()->fullName()), eid);
 
 	auto end = eid->id.end();
 	if(skipLast)
@@ -57,7 +58,7 @@ WGLPass::checkTargetTypeMatch(antlr4::Token *targetType, WGLSymbol *effectiveTar
 	SymbolType tt = WGLUtils::getSymbolType(targetType);
 
 	if(tt != effectiveTarget->symbolType())
-		throw WGLError(std::format("Specified target type '{}' doesn't match with target symbol '{}' type '{}'.", WGLUtils::getSymbolTypeName(tt), effectiveTarget->fullName(), WGLUtils::getSymbolTypeName(effectiveTarget->symbolType())), ctx);
+		throw WGLError(fmt::format("Specified target type '{}' doesn't match with target symbol '{}' type '{}'.", WGLUtils::getSymbolTypeName(tt), effectiveTarget->fullName(), WGLUtils::getSymbolTypeName(effectiveTarget->symbolType())), ctx);
 }
 
 void WGLPass::popScope(antlr4::ParserRuleContext *ctx) {
@@ -77,7 +78,7 @@ WGLSymbol *WGLPass::componentNodeDeclaration(WoglacParser::ComponentNodeStatemen
 	std::string name = baseName;
 	int i = 2;
 	while(!name.empty() && directTarget->childrenByName().contains(name))
-		name = std::format("{}_{}", baseName, std::to_string(i++));
+		name = fmt::format("{}_{}", baseName, std::to_string(i++));
 
 	return new WGLSymbol(ctx_, directTarget, name, SymbolType::ComponentNode, useDeclarationAST ? ctx : nullptr);
 }

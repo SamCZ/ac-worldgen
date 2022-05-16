@@ -7,3 +7,6 @@
 [submodule "deps/fastNoise2"]
 	path = deps/fastNoise2
 	url = https://github.com/Auburn/FastNoise2
+[submodule "fmt"]
+	path = deps/fmt
+	url = git@github.com:fmtlib/fmt.git

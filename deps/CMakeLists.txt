@@ -46,3 +46,7 @@ if(NOT TARGET TracyClient)
 	endif()
 	set(BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_CACHE})
 endif()
+
+if(NOT TARGET fmt)
+	add_subdirectory(fmt)
+endif()

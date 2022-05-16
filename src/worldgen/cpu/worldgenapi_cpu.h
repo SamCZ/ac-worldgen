@@ -8,6 +8,14 @@
 #include "supp/wga_valuerecs_cpu.h"
 #include "supp/wga_datarecord_cpu.h"
 
+#ifndef THREAD_LOCAL
+	#if defined( MSVC )
+		#define THREAD_LOCAL thread_local
+	#else
+		#define THREAD_LOCAL __thread
+	#endif
+#endif
+
 class WorldGenAPI_CPU : public WorldGenAPI {
 
 public:
@@ -19,7 +27,7 @@ public:
 
 public:
 	/// Used for resolving local variables
-	static thread_local WGA_StructureGenerator_CPU *structureGen;
+	static THREAD_LOCAL WGA_StructureGenerator_CPU *structureGen;
 
 public:
 	virtual WGA_Value *constFloat(float val) override;

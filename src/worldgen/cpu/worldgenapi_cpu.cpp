@@ -18,8 +18,8 @@
 
 using LocalCache = std::unordered_map<WGA_DataRecord_CPU::Key, WGA_DataRecord_CPU::Ptr>;
 
-thread_local WGA_StructureGenerator_CPU *WorldGenAPI_CPU::structureGen = nullptr;
-thread_local LocalCache *localCache = nullptr;
+THREAD_LOCAL WGA_StructureGenerator_CPU *WorldGenAPI_CPU::structureGen = nullptr;
+THREAD_LOCAL LocalCache *localCache = nullptr;
 
 WorldGenAPI_CPU::~WorldGenAPI_CPU() {
 	for(WGA_Symbol *sym: symbols_)
@@ -116,6 +116,8 @@ WGA_Value *WorldGenAPI_CPU::proxy(WGA_Value *v) {
 }
 
 WGA_DataRecord_CPU::Ptr WorldGenAPI_CPU::getDataRecord(const WGA_DataRecord_CPU::Key &key, const WGA_DataRecord_CPU::Ctor &ctor) {
+	//printf("m");
+
 	if(key.symbol->isContextual()) {
 		ASSERT(structureGen);
 		return structureGen->getDataRecord(key, ctor);

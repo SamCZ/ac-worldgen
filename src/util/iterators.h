@@ -62,7 +62,7 @@ public:
 		struct I {
 			using T = std::remove_cvref_t<decltype(func(std::declval<Iterator::T>()))>;
 			Impl sub;
-			const F func;
+			F func;
 
 			inline void next() { sub.next(); }
 

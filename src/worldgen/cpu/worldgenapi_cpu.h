@@ -9,7 +9,7 @@
 #include "supp/wga_datarecord_cpu.h"
 
 #ifndef THREAD_LOCAL
-	#if defined( MSVC )
+	#if defined( _MSC_VER )
 		#define THREAD_LOCAL thread_local
 	#else
 		#define THREAD_LOCAL __thread

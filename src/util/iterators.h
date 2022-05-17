@@ -58,11 +58,11 @@ public:
 
 public:
 	template<typename F>
-	inline auto map(const F &func) const {
+	inline auto map(const F &func_) const {
 		struct I {
-			using T = std::remove_cvref_t<decltype(func(std::declval<Iterator::T>()))>;
+			using T = std::remove_cvref_t<decltype(func_(std::declval<Iterator::T>()))>;
 			Impl sub;
-			F func;
+			const F func;
 
 			inline void next() { sub.next(); }
 
@@ -70,11 +70,11 @@ public:
 
 			inline T val() const { return func(sub.val()); }
 		};
-		return Iterator<I>{I{impl, func}};
+		return Iterator<I>{I{impl, func_}};
 	}
 
 	template<typename F>
-	inline auto filter(const F &func) const {
+	inline auto filter(const F &func_) const {
 		struct I {
 			using T = Iterator::T;
 			Impl sub;
@@ -94,11 +94,11 @@ public:
 				return *this;
 			}
 		};
-		return Iterator<I>{I{impl, func}.skip()};
+		return Iterator<I>{I{impl, func_}.skip()};
 	}
 
 	template<typename F>
-	inline auto while_(const F &func) const {
+	inline auto while_(const F &func_) const {
 		struct I {
 			using T = Iterator::T;
 			Impl sub;
@@ -110,7 +110,7 @@ public:
 
 			inline T val() const { return sub.val(); }
 		};
-		return Iterator<I>{I{impl, func}};
+		return Iterator<I>{I{impl, func_}};
 	}
 
 	/// Returns iterator of std::pair(qsizetype, originalValue) - pair.first is index
@@ -140,7 +140,7 @@ public:
 	 * This is useful when you want to store a handle for a container you are iterating over to prevent the container being destroyed during iterator.
 	 */
 	template<typename P>
-	inline auto payload(const P &payload) const {
+	inline auto payload(const P &payload_) const {
 		struct I {
 			using T = Iterator::T;
 			Impl sub;
@@ -152,7 +152,7 @@ public:
 
 			inline auto val() const { return sub.val(); }
 		};
-		return Iterator<I>{I{impl, payload}};
+		return Iterator<I>{I{impl, payload_}};
 	}
 
 	template<typename F>
@@ -250,7 +250,7 @@ public:
 
 };
 
-static auto iteratorIota(size_t n = -1) {
+static auto iteratorIota(size_t n_ = -1) {
 	struct I {
 		using T = size_t;
 		const T n;
@@ -262,12 +262,12 @@ static auto iteratorIota(size_t n = -1) {
 
 		inline T val() const { return i; }
 	};
-	return Iterator<I>{I{n}};
+	return Iterator<I>{I{n_}};
 }
 
 /// Standard begin/end based iterator
 template<typename IT, typename E>
-static auto iteratorStd(const IT &it, const E &end) {
+static auto iteratorStd(const IT &it_, const E &end_) {
 	struct I {
 		using T = std::iter_value_t<IT>;
 		IT it;
@@ -279,7 +279,7 @@ static auto iteratorStd(const IT &it, const E &end) {
 
 		inline T val() const { return *it; }
 	};
-	return Iterator<I>{I{it, end}};
+	return Iterator<I>{I{it_, end_}};
 }
 
 /// Standard begin/end based iterator
@@ -325,10 +325,10 @@ static auto iteratorIt(const C &container) {
 
 /// Std based iterator, iterates over container.find(key) (while it != end && it.key() == key), returns it.value()
 template<typename C, typename K>
-static auto iteratorFind(const C &container, const K &key) {
+static auto iteratorFind(const C &container, const K &key_) {
 	struct I {
-		using T = std::remove_cvref_t<decltype(*container.find(key))>;
-		decltype(container.find(key)) it;
+		using T = std::remove_cvref_t<decltype(*container.find(key_))>;
+		decltype(container.find(key_)) it;
 		decltype(container.end()) end;
 		K key;
 
@@ -338,5 +338,5 @@ static auto iteratorFind(const C &container, const K &key) {
 
 		inline T val() const { return it.value(); }
 	};
-	return Iterator<I>{I{container.find(key), container.end(), key}};
+	return Iterator<I>{I{container.find(key_), container.end(), key_}};
 }

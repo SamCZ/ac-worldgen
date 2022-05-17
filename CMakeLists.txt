@@ -16,7 +16,7 @@ add_subdirectory(deps)
 if (MSVC)
 	add_compile_options(/bigobj)
 else()
-	add_compile_options(-Wa,-mbig-obj)
+	add_compile_options(-W) #,-mbig-obj
 endif()
 
 file(GLOB_RECURSE PROJECT_SOURCE_FILES src/*.h src/*.hpp src/*.cpp src/*.cc)

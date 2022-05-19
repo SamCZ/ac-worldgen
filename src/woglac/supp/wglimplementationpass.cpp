@@ -3,6 +3,7 @@
 #include <fmt/format.h>
 #include <functional>
 #include <bit>
+#include <cstdint>
 
 #include "util/iterators.h"
 
@@ -604,7 +605,7 @@ WGLExpressionResult WGLImplementationPass::expression(WoglacParser::ExtendedIden
 	switch(sym->symbolType()) {
 
 		case SymbolType::FieldVariable:
-			return EXPRESSION_RESULT(sym->valueType, ctx.map<WGA_Value>(sym), fmt::format("(SYMBOL;{})", std::bit_cast<intptr_t>(sym)));
+			return EXPRESSION_RESULT(sym->valueType, ctx.map<WGA_Value>(sym), fmt::format("(SYMBOL;{})", reinterpret_cast<intptr_t>(sym)));
 
 		case SymbolType::StructureVariable:
 		case SymbolType::StructureParam: {
@@ -614,14 +615,14 @@ WGLExpressionResult WGLImplementationPass::expression(WoglacParser::ExtendedIden
 			if(symp != scp)
 				throw WGLError(fmt::format("Local variable '{}' cannot be used outside of the rule/structure scope '{}'", sym->fullName(), symp->fullName()), ctx);
 
-			return EXPRESSION_RESULT(sym->valueType, ctx.map<WGA_Value>(sym), fmt::format("(SYMBOL;{})", std::bit_cast<intptr_t>(sym)));
+			return EXPRESSION_RESULT(sym->valueType, ctx.map<WGA_Value>(sym), fmt::format("(SYMBOL;{})", reinterpret_cast<intptr_t>(sym)));
 		}
 
 		case SymbolType::Rule:
-			return EXPRESSION_RESULT(ValueType::Rule, ctx.api->constRule(ctx.map<WGA_Rule>(sym)), fmt::format("(SYMBOL;{})", std::bit_cast<intptr_t>(sym)));
+			return EXPRESSION_RESULT(ValueType::Rule, ctx.api->constRule(ctx.map<WGA_Rule>(sym)), fmt::format("(SYMBOL;{})", reinterpret_cast<intptr_t>(sym)));
 
 		case SymbolType::ComponentNode:
-			return EXPRESSION_RESULT(ValueType::ComponentNode, ctx.api->constComponentNode(ctx.map<WGA_ComponentNode>(sym)), fmt::format("(SYMBOL;{})", std::bit_cast<intptr_t>(sym)));
+			return EXPRESSION_RESULT(ValueType::ComponentNode, ctx.api->constComponentNode(ctx.map<WGA_ComponentNode>(sym)), fmt::format("(SYMBOL;{})", reinterpret_cast<intptr_t>(sym)));
 
 		default:
 			throw WGLError(fmt::format("Symbol '{}' of type '{}' cannot be used as a value.", sym->fullName(), WGLUtils::getSymbolTypeName(sym->symbolType())), ctx);
@@ -639,7 +640,7 @@ WGLExpressionResult WGLImplementationPass::expression(WoglacParser::BiomeParamEx
 	deps.insert(param);
 
 	std::vector<WGLExpressionResult> args;
-	args.push_back(EXPRESSION_RESULT(param->valueType, ctx.map<WGA_Value>(param), fmt::format("(SYMBOL;{})", std::bit_cast<intptr_t>(param))));
+	args.push_back(EXPRESSION_RESULT(param->valueType, ctx.map<WGA_Value>(param), fmt::format("(SYMBOL;{})", reinterpret_cast<intptr_t>(param))));
 
 	for(auto e: ctx->params)
 		args.push_back(expression(e, deps));

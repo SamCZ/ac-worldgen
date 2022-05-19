@@ -2,6 +2,7 @@
 
 #include <fmt/format.h>
 #include <functional>
+#include <bit>
 
 #include "util/iterators.h"
 

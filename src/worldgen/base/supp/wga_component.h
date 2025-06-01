@@ -7,6 +7,9 @@
 
 #include "wga_grammarsymbol.h"
 #include "wga_value.h"
+#include "util/blockworldpos.h"
+
+class WGA_ComponentNode;
 
 class WGA_Component : public WGA_GrammarSymbol {
 

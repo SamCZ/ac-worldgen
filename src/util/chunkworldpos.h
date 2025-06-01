@@ -1,5 +1,6 @@
 #pragma once
 
+#include <defines.h>
 #include <limits>
 
 #include "util/vector.h"

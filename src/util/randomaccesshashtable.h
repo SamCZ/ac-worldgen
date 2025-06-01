@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <vector>
 #include <random>
+#include "assert.h"
 
 /// Hash table that allows random access (via indexes)
 /// Index for an item can change if other item is deleted

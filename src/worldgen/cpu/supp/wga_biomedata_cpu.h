@@ -1,6 +1,11 @@
 #pragma once
 
 #include <stdint.h>
+#include "defines.h"
+#include "util/blockworldpos.h"
+#include "worldgen/base/supp/wga_biome.h"
+
+class WorldGenAPI_CPU;
 
 struct WGA_BiomeData_CPU {
 

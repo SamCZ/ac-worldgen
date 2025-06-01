@@ -2,6 +2,9 @@
 
 #include "wga_grammarsymbol.h"
 
+class WGA_Component;
+class WGA_Rule;
+
 class WGA_RuleExpansion : public WGA_GrammarSymbol {
 
 public:

@@ -2,6 +2,10 @@
 
 #include <functional>
 #include <memory>
+#include "defines.h"
+#include "util/blockworldpos.h"
+
+class WGA_Symbol;
 
 class WGA_DataRecord_CPU {
 

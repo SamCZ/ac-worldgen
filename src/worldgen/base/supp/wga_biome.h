@@ -5,6 +5,8 @@
 
 #include "wga_symbol.h"
 
+class WGA_Value;
+
 class WGA_Biome : public WGA_Symbol {
 
 public:

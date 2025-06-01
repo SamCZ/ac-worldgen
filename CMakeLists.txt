@@ -33,4 +33,4 @@ target_compile_definitions(ac_worldgen PUBLIC _SILENCE_CXX17_CODECVT_HEADER_DEPR
 
 target_link_libraries(ac_worldgen PUBLIC antlr4_static FastNoise TracyClient fmt)
 
-add_subdirectory(app)
+#add_subdirectory(app)

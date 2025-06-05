@@ -3,7 +3,7 @@
 	url = https://github.com/wolfpld/tracy
 [submodule "deps/antlr"]
 	path = deps/antlr
-	url = https://github.com/AnotherCraft/antlr4
+	url = git@github.com:SamCZ/antlr4.git
 [submodule "deps/fastNoise2"]
 	path = deps/fastNoise2
 	url = https://github.com/Auburn/FastNoise2

@@ -28,13 +28,7 @@ if(NOT TARGET FastNoise)
 	add_subdirectory(fastNoise2)
 endif()
 
-if(NOT TARGET TracyClient)
-	if(AC_ENABLE_TRACY)
-		set(TRACY_ENABLE ON)
-	else()
-		set(TRACY_ENABLE OFF)
-	endif()
-
+if(NOT TARGET TracyClient AND AC_USE_TRACY)
 	set(BUILD_SHARED_LIBS_CACHE ${BUILD_SHARED_LIBS})
 	set(BUILD_SHARED_LIBS OFF)
 

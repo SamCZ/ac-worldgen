@@ -1,3 +1,9 @@
 #pragma once
 
-#include "Tracy.hpp"
+#if AC_ENABLE_TRACY
+	#include "Tracy.hpp"
+#else
+	#define ZoneScopedN(...)
+	#define ZoneTransientN(...)
+	#define ZoneScoped
+#endif

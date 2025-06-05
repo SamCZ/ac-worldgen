@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.20)
 project(ac_worldgen_master VERSION 0.0.3 LANGUAGES CXX)
 
 option(AC_USE_TRACY "Use tracy" OFF)
-option(AC_BUILD_APP "Use tracy" ON)
+option(AC_BUILD_APP "Build app" ON)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

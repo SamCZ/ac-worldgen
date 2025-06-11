@@ -79,14 +79,14 @@ public:
 	}
 
 	inline T &operator ()(int x, int y) {
-		ASSERT(x >= 0 && x < W);
-		ASSERT(y >= 0 && y < H);
+		ASSERT(x >= 0 && x < W, "Out of range");
+		ASSERT(y >= 0 && y < H, "Out of range");
 		return data[y][x];
 	}
 
 	inline const T &operator ()(int x, int y) const {
-		ASSERT(x >= 0 && x < W);
-		ASSERT(y >= 0 && y < H);
+		ASSERT(x >= 0 && x < W, "Out of range");
+		ASSERT(y >= 0 && y < H, "Out of range");
 		return data[y][x];
 	}
 
@@ -179,7 +179,7 @@ public:
 		        d[8] * d[2] * d[5];
 
 		T det = d[0] * i[0] + d[1] * i[4] + d[2] * i[8] + d[3] * i[12];
-		ASSERT(det == 1);
+		ASSERT(det == 1, "Out of range");
 
 		return result;
 	}
@@ -230,7 +230,7 @@ public:
 	/// Expects all vectors to be normalized
 	static M lookAt(const VA &eye, const VA &center, const VA &up) {
 		const VA forward = center - eye;
-		ASSERT(forward != 0);
+		ASSERT(forward != 0, "Out of range");
 
 		const VA side = forward.crossProduct(up);
 		const VA upn = side.crossProduct(forward);

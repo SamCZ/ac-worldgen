@@ -64,7 +64,7 @@ public:
 
 	template<typename T>
 	inline T *mapToSymbol(WGA_SymbolID_CPU id) {
-		ASSERT(idSymbolMapping_.contains(id));
+		ASSERT(idSymbolMapping_.contains(id), "Out of range");
 		return static_cast<T *>(idSymbolMapping_[id]);
 	}
 

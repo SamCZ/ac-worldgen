@@ -141,12 +141,12 @@ public:
 	}
 
 	constexpr inline T &operator [](int i) {
-		ASSERT(i >= 0 && i < D);
+		ASSERT(i >= 0 && i < D, "Out of range");
 		return data[i];
 	}
 
 	constexpr inline const T &operator [](int i) const {
-		ASSERT(i >= 0 && i < D);
+		ASSERT(i >= 0 && i < D, "Out of range");
 		return data[i];
 	}
 

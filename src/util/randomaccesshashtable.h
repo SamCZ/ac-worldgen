@@ -38,7 +38,7 @@ public:
 
 public:
 	void removeIndex(int ix) {
-		ASSERT(ix >= 0 && ix < size());
+		ASSERT(ix >= 0 && ix < size(), "Out of range");
 
 		Record &r = records_[ix];
 		indexes_.erase(r.key);
@@ -51,13 +51,13 @@ public:
 			// Item is not on the back - swap
 			r = records_.back();
 			records_.pop_back();
-			ASSERT(indexes_.at(r.key) == records_.size());
+			ASSERT(indexes_.at(r.key) == records_.size(), "Out of range");
 			indexes_[r.key] = ix;
 		}
 	}
 
 	Value takeIndex(int ix) {
-		ASSERT(ix >= 0 && ix < size());
+		ASSERT(ix >= 0 && ix < size(), "Out of range");
 
 		const Value rv = records_[ix].value;
 		removeIndex(ix);

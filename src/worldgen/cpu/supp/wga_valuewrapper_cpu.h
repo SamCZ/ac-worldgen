@@ -16,7 +16,7 @@ public:
 	WGA_ValueWrapper_CPU(WGA_Value_CPU *v)
 		: v(v) {
 		if(v) {
-			ASSERT(v->valueType() == type);
+			ASSERT(v->valueType() == type, "Out of range");
 		}
 	}
 

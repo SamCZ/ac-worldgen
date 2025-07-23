@@ -157,7 +157,7 @@ Type:
 	| 'Rule'
 	| 'ComponentNode';
 BlockLiteral:
-	'block.' [a-zA-Z.0-9]+;
+	'block.' [a-zA-Z.0-9_]+;
 ComparisonOp:
 	'<'
 	| '<='
